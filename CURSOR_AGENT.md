@@ -1,43 +1,25 @@
-# Cursor Cloud Agent brief — Phase 1 MVP
+# Cursor Cloud Agent brief — MVP
 
 Repo: https://github.com/rschultz2003/guru-maps-clone
+Model: composer-2 (or Composer 2.5 / default). autoCreatePR: true.
 
-## Launch (human — API key required)
+## Build
 
-Generate a key: https://cursor.com/dashboard/api
+Scaffold an Expo SDK 52+ TypeScript app with Expo Router.
 
-```bash
-curl --request POST \
-  --url https://api.cursor.com/v1/agents \
-  -u "$CURSOR_API_KEY:" \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "name": "Trail Pin MVP scaffold",
-    "prompt": {
-      "text": "Read README.md, PLAN.md, and this file first. Scaffold an Expo SDK + TypeScript + Expo Router app named Trail Pin in this repo. Use @maplibre/maplibre-react-native with an OSM-based style and visible © OpenStreetMap contributors attribution. Implement the core differentiator: long-press map → new pin → upload image (expo-image-picker) → persist to FileSystem + SQLite → render that image as the pin icon on the map. Also: default icon set, folders (create/rename/assign/toggle visibility), user location puck, data survives relaunch. Do NOT implement CarPlay, RevenueCat, full country pack downloads, or voice navigation in this PR. Open a PR against main with the working MVP scaffold. Model preference: composer-2."
-    },
-    "model": { "id": "composer-2" },
-    "repos": [
-      {
-        "url": "https://github.com/rschultz2003/guru-maps-clone",
-        "startingRef": "main"
-      }
-    ],
-    "autoCreatePR": true
-  }'
-```
+Implement:
+1. Full-screen MapLibre map (`@maplibre/maplibre-react-native`) with OSM-compatible style (OpenFreeMap or MapLibre demo tiles if keyless).
+2. Show user location (permission flow).
+3. Long-press to drop a pin at that coordinate.
+4. Pin editor sheet: title, notes, folder picker, color.
+5. **Custom icon upload**: image picker → resize → save to app documents → render that image as the map marker. Also ship a small preset icon set.
+6. Folders/collections: CRUD, assign pins, filter visible pins.
+7. Persist all of the above in SQLite. Survive reload.
+8. Basic list screen of pins and folders.
+9. Settings screen with privacy-first copy (no ads, location on-device).
 
-Auth is HTTP Basic with the API key as username and an empty password (`-u KEY:`), or `Authorization: Bearer KEY`.
+Do not implement IAP, auth, CarPlay, or routing in this PR.
+Do not add tracking SDKs.
+Keep the JS bundle lean. Add README run steps.
 
-## Agent must implement
-
-1. Expo Router scaffold (`npx create-expo-app` pattern if empty aside from docs).
-2. MapLibre map, OSM style, OSM attribution.
-3. Long-press to create a pin at that coordinate.
-4. Custom icon upload stored on device and shown as the map pin (differentiator).
-5. Default icon set if no upload.
-6. Folders: create/list/assign/toggle visibility.
-7. SQLite persistence for pins/icons/folders.
-8. Location permission + puck.
-
-Out of scope this PR: CarPlay, subscriptions, offline country packs, TBT nav.
+Push a PR titled `feat: MVP map + custom icon pins + folders`.

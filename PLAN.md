@@ -1,100 +1,90 @@
-# Trail Pin — master plan
+# Master plan — Guru Maps parity
 
-## Outcomes
+Last updated: 2026-09-19 (CoS).
 
-1. Spec locked to Guru Maps App Store surface area (offline OSM, custom pins/icons, folders, multi-stop routes, GPS tracks + GPX/KML, offline search, 3D terrain, sync, CarPlay, no ads, privacy-first).
-2. Differentiator shipped first: **upload an image → pin it on the map**.
-3. MVP on a device or simulator, then navigation, tracks, sync, Pro.
+## Goal
+
+Ship an offline maps app with Guru Maps feature parity, with a sharper custom-icon upload flow. Public spec lives here; product brand to ship is BossMaps unless Reuben decides otherwise.
 
 ## Architecture
 
 ```
 [Expo RN app]
-  MapLibre view ↔ local style + optional PMTiles/MBTiles
-  Pin layer     ↔ SQLite + icon files on disk
-  Folder layer  ↔ same DB
-  GPS           ↔ expo-location background
+  MapLibre view
+  SQLite (pins, folders, icons metadata, tracks, routes, downloads)
+  File store (icon blobs, MBTiles, DEM, recordings)
         |
-        | HTTPS when user signed in
+        | opt-in HTTPS
         v
-[API]  auth, icon blob store, sync feed (pins/folders/tracks/routes)
-[Pro]  RevenueCat entitlements gate packs / nav / multi-device
+[Sync API]  auth + object store (icons) + JSON documents (pins/folders/tracks)
+[Tile CDN / self-host]  vector tiles + style + DEM
+[Router packs]  Valhalla/OSRM graphs per region
+[Search packs]  offline geocode + POI categories
 ```
 
-Offline-first rules:
-- Create/edit/delete pins with no network.
-- Icons written to `FileSystem.documentDirectory/icons/{id}`.
-- Sync queue table; retry with backoff.
-- Location never leaves the device unless sync is enabled.
+### Data model (MVP)
+
+- `folders(id, name, parent_id, color, sort)`
+- `icons(id, kind: preset|upload, local_uri, hash, width, height, created_at)`
+- `pins(id, lat, lon, name, notes, folder_id, icon_id, color, created_at, updated_at)`
+- `tracks`, `track_points` — Phase 2
+- `routes`, `waypoints` — Phase 2
+- `map_packs(id, region, bytes, status)` — Phase 1 lite (cache) / Phase 2 full
+
+### Icon pipeline
+
+1. `expo-image-picker` → user image.
+2. Resize longest edge 256px, PNG, optional circle mask.
+3. SHA-256 hash; store under `FileSystem.documentDirectory/icons/{hash}.png`.
+4. Register in `icons` table; attach to pin.
+5. MapLibre `Images` / symbol layer uses local file URI as icon-image.
+6. Sync (later): upload blob by hash; pins reference `icon_hash`.
 
 ## Phases
 
-### Phase 0 — Spec (this repo)
-- README + PLAN.
-- Working name Trail Pin (changeable).
+### Phase 0 — Repo + agent brief (done)
+Docs, Cursor agent prompt, STATUS.
 
-### Phase 1 — MVP (current build target)
-Must ship:
-- MapLibre map, OSM raster or vector style (e.g. OpenFreeMap / demo tiles for dev).
-- User location + follow mode.
-- Long-press to drop a pin.
-- Pin editor: title, note, folder, default icon **or uploaded image**.
-- Image picker → persist file → render as MapLibre symbol/image layer.
-- Icon library screen (grid of uploads + defaults).
-- Folders: create, rename, assign pin, toggle visibility.
-- Local persistence (SQLite).
-- Basic online geocode search (Nominatim, rate-limited) with a clear path to offline later.
-- Attribution: © OpenStreetMap contributors.
+### Phase 1 — MVP (now)
+Must land in one PR:
 
-Out of MVP: turn-by-turn, CarPlay, 3D mesh, paid packs, account sync.
+- Expo + TypeScript + Expo Router scaffold (iOS + Android)
+- MapLibre map, user location, OSM style (demo tiles OK: `https://demotiles.maplibre.org/style.json` or OpenFreeMap)
+- Long-press drop pin
+- Pin list + tap-to-focus
+- **Custom icon upload** + preset set (8–12 glyphs)
+- Folders: create, assign pin, filter map by folder
+- Local SQLite persistence
+- Settings stub: units, privacy copy, no ads
+- README run instructions (`npx expo start`)
+
+Out of MVP: routing, tracks, 3D, CarPlay, sync, Pro IAP, offline country packs (online OSM tiles + cache is acceptable for MVP).
 
 ### Phase 2 — Navigation + tracks
-- Multi-stop planner UI.
-- Routing profiles (car/bike/walk/straight-line).
-- Voice TBT + reroute (online first).
-- Track record + live stats + GPX/KML import/export.
-- Elevation graph if DEM available.
+Multi-stop planner, offline routing pack, voice guidance, track record + stats + GPX/KML import/export, offline search pack for one region (AU first).
 
-### Phase 3 — Offline depth + terrain
-- Region pack downloader (PMTiles).
-- Offline search index (whoosh/mini or prebuilt).
-- Hillshade / contours / pitch 3D.
-- MBTiles/sqlitedb import.
+### Phase 3 — Terrain + power features
+DEM / 3D relief, contours, hillshade, elevation profile, GeoJSON overlay, MBTiles import, coordinate grids.
 
-### Phase 4 — Sync + Pro + CarPlay
-- Auth + icon/pin sync.
-- RevenueCat Pro.
-- CarPlay / Android Auto.
-- Folder share links.
+### Phase 4 — Sync + account
+Auth, encrypted sync of pins/folders/icons/tracks, conflict = last-write-wins + deleted tombstones.
 
-## MVP implementation notes for agents
+### Phase 5 — Pro + CarPlay + store
+RevenueCat, pack entitlements, Pro layers, CarPlay map + upcoming turn, privacy nutrition, TestFlight. Human approval required before any App Store submit or spend.
 
-Stack lock for Phase 1:
-- Expo SDK current, TypeScript, Expo Router.
-- `@maplibre/maplibre-react-native` (or `maplibre-react-native`).
-- `expo-image-picker`, `expo-file-system`, `expo-sqlite`, `expo-location`.
-- No Firebase required for MVP.
+## Coding agents
 
-Pin schema (SQLite):
-- `pins(id, title, note, lat, lon, folder_id, icon_id, created_at, updated_at, deleted_at)`
-- `icons(id, kind, name, local_path, remote_url, created_at)` kind = default | upload
-- `folders(id, name, parent_id, visible, created_at)`
-
-UX for differentiator:
-1. Long-press map.
-2. Sheet: “New pin”.
-3. Tap icon → library or “Upload”.
-4. Crop to square, save, pin appears immediately with that artwork.
+- Models: **Composer 2.5 or Grok 4.6 only** (org rule).
+- Cursor Cloud Agents: `POST https://api.cursor.com/v1/agents` with `autoCreatePR: true`, repo `https://github.com/rschultz2003/guru-maps-clone`.
+- Brief: [CURSOR_AGENT.md](./CURSOR_AGENT.md).
 
 ## Risks
 
-- MapLibre RN + Expo config plugins / new architecture — budget time for a bare prebuild.
-- Nominatim ToS: cache, identify UA, do not hammer.
-- Store listing must not impersonate Guru Maps.
-- Large icon bitmaps on the symbol layer: cap size (e.g. 128–256 px) and compress.
+- Trademark: never ship under the Guru Maps name.
+- Offline packs are large; start with cache + one AU extract.
+- Background GPS battery + App Store location purpose strings.
+- Custom icons as MapLibre images: many unique icons need atlas / per-pin SymbolLayer management.
 
-## Done when (Phase 1)
+## Success for MVP PR
 
-- `npx expo start` runs.
-- Simulator: drop pin, upload image, see custom icon on map, file it in a folder, relaunch and data remains.
-- PR opened against `main` with scaffold + the above.
+App boots on simulator, map renders, user can upload a photo as a pin icon, pin persists after reload, pins group into a folder.
