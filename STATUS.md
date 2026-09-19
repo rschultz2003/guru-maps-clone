@@ -1,7 +1,6 @@
-# Status — 2026-09-19
+# Status — 2026-09-20
 
-- Spec refreshed by Chief of Staff (README + PLAN).
-- Repo: https://github.com/rschultz2003/guru-maps-clone (docs only; no app scaffold yet).
-- Sister product: private `rschultz2003/bossmaps` — operators must not brand that app as guru-maps-clone.
-- Cursor Cloud Agents API: no `CURSOR_API_KEY` in this environment. User must run the curl in README/CoS report.
-- Next: agent scaffolds Expo MVP + custom icon upload PR.
+- Spec expanded on `main` (README + PLAN).
+- No app scaffold on this public repo yet (docs only).
+- Cursor Cloud Agents API key is **not** in the CoS environment. Launch command is in CURSOR_AGENT.md.
+- Sister product: private `rschultz2003/bossmaps` (do not brand that repo as guru-maps-clone).
