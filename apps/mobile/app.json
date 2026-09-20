@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Atlas Maps",
+    "slug": "atlas-maps",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true, "infoPlist": { "NSLocationWhenInUseUsageDescription": "Show your position on the map.", "NSPhotoLibraryUsageDescription": "Choose custom pin icons." } },
+    "android": { "permissions": ["ACCESS_FINE_LOCATION", "READ_MEDIA_IMAGES"] },
+    "plugins": ["@maplibre/maplibre-react-native", "expo-sqlite"]
+  }
+}

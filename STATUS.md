@@ -1,6 +1,6 @@
-# Status — 2026-09-20
+# Status — 2026-09-20 (CoS live pass)
 
-- Spec expanded on `main` (README + PLAN).
-- No app scaffold on this public repo yet (docs only).
-- Cursor Cloud Agents API key is **not** in the CoS environment. Launch command is in CURSOR_AGENT.md.
-- Sister product: private `rschultz2003/bossmaps` (do not brand that repo as guru-maps-clone).
+- Spec on `main`: README.md, PLAN.md, CURSOR_AGENT.md.
+- Phase 1 scaffold pushed under `apps/mobile` (Expo + TS + MapLibre + local pin/icon/folder store).
+- Cursor Cloud Agents: **API key missing** in CoS env (`401 Invalid User API Key`). Run the curl in CURSOR_AGENT.md locally.
+- Sister product: private `rschultz2003/bossmaps`. Do not ship the name “Guru Maps”.
