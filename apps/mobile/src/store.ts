@@ -19,9 +19,6 @@ async function ensureBuiltinIcons(): Promise<void> {
   }
 }
 
-const db = SQLite.openDatabaseSync("atlas.db");
-const ICON_DIR = FileSystem.documentDirectory + "icons/";
-
 function rowToFolder(row: Folder & { visible: number | boolean }): Folder {
   return { ...row, visible: !!row.visible };
 }

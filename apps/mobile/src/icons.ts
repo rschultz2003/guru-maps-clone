@@ -5,11 +5,22 @@ import * as ImagePicker from "expo-image-picker";
 import { iconDir, listIcons, upsertIcon } from "./store";
 import type { IconAsset } from "./types";
 
+function bufferToHex(buffer: ArrayBuffer): string {
+  return [...new Uint8Array(buffer)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function readFileBytes(uri: string): Promise<Uint8Array> {
+  const b64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+  const raw = atob(b64);
+  const bytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+  return bytes;
+}
+
 async function sha256File(uri: string): Promise<string> {
-  const data = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
-  return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, data, {
-    encoding: Crypto.CryptoEncoding.BASE64,
-  });
+  const bytes = await readFileBytes(uri);
+  const digest = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA256, bytes);
+  return bufferToHex(digest);
 }
 
 export async function pickAndStoreIcon(): Promise<IconAsset | null> {

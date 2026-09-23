@@ -85,7 +85,7 @@ export default function App() {
       title: "New place",
       notes: "",
       folderId,
-      iconId: icons[0]?.id ?? "pin-red",
+      iconId: "pin-red",
       createdAt: now,
       updatedAt: now,
     });
@@ -138,7 +138,7 @@ export default function App() {
     <View style={styles.root}>
       <StatusBar style="auto" />
       <MapLibreGL.MapView style={styles.map} mapStyle={STYLE} onLongPress={onLongPress}>
-        <MapLibreGL.Camera ref={cameraRef} zoomLevel={3} centerCoordinate={[0, 20]} />
+        <MapLibreGL.Camera ref={cameraRef} defaultSettings={{ zoomLevel: 3, centerCoordinate: [0, 20] }} />
         <MapLibreGL.Images images={styleImages} />
         <MapLibreGL.UserLocation visible />
         <MapLibreGL.ShapeSource id="pins" shape={pinCollection}>
