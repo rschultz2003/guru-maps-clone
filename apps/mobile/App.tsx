@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import MapLibreGL, { type CameraRef } from "@maplibre/maplibre-react-native";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -10,8 +12,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import MapLibreGL from "@maplibre/maplibre-react-native";
-import { StatusBar } from "expo-status-bar";
 import { initStore, listFolders, listIcons, listPins, upsertFolder, upsertPin } from "./src/store";
 import { pickAndStoreIcon } from "./src/icons";
 import type { Folder, IconAsset, Pin } from "./src/types";
@@ -23,12 +23,14 @@ function uid() {
 }
 
 export default function App() {
+  const cameraRef = useRef<CameraRef>(null);
   const [ready, setReady] = useState(false);
   const [pins, setPins] = useState<Pin[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [icons, setIcons] = useState<IconAsset[]>([]);
   const [draft, setDraft] = useState<Pin | null>(null);
   const [showFolders, setShowFolders] = useState(false);
+  const [showPins, setShowPins] = useState(false);
   const [showPacks, setShowPacks] = useState(false);
   const [newFolder, setNewFolder] = useState("");
 
@@ -50,8 +52,30 @@ export default function App() {
     return pins.filter((p) => !p.folderId || !hidden.has(p.folderId));
   }, [pins, folders]);
 
-  const onLongPress = (e: any) => {
-    const [lng, lat] = e.geometry.coordinates;
+  const styleImages = useMemo(() => {
+    const map: Record<string, { uri: string }> = {};
+    for (const icon of icons) {
+      map[icon.id] = { uri: icon.localUri };
+    }
+    return map;
+  }, [icons]);
+
+  const pinCollection = useMemo(
+    (): GeoJSON.FeatureCollection => ({
+      type: "FeatureCollection",
+      features: visiblePins.map((p) => ({
+        type: "Feature",
+        id: p.id,
+        geometry: { type: "Point", coordinates: [p.lng, p.lat] },
+        properties: { id: p.id, title: p.title, iconId: p.iconId },
+      })),
+    }),
+    [visiblePins],
+  );
+
+  const onLongPress = (feature: GeoJSON.Feature) => {
+    if (feature.geometry?.type !== "Point") return;
+    const [lng, lat] = feature.geometry.coordinates;
     const now = Date.now();
     const folderId = folders[0]?.id ?? null;
     setDraft({
@@ -61,7 +85,7 @@ export default function App() {
       title: "New place",
       notes: "",
       folderId,
-      iconId: icons[0]?.id ?? "pin-red",
+      iconId: "pin-red",
       createdAt: now,
       updatedAt: now,
     });
@@ -92,6 +116,16 @@ export default function App() {
     refresh();
   };
 
+  const flyToPin = (pin: Pin) => {
+    cameraRef.current?.setCamera({
+      centerCoordinate: [pin.lng, pin.lat],
+      zoomLevel: 14,
+      animationDuration: 1200,
+      animationMode: "flyTo",
+    });
+    setShowPins(false);
+  };
+
   if (!ready) {
     return (
       <View style={styles.center}>
@@ -103,29 +137,33 @@ export default function App() {
   return (
     <View style={styles.root}>
       <StatusBar style="auto" />
-      <MapLibreGL.MapView style={styles.map} styleURL={STYLE} onLongPress={onLongPress}>
-        <MapLibreGL.Camera zoomLevel={3} centerCoordinate={[0, 20]} />
+      <MapLibreGL.MapView style={styles.map} mapStyle={STYLE} onLongPress={onLongPress}>
+        <MapLibreGL.Camera ref={cameraRef} defaultSettings={{ zoomLevel: 3, centerCoordinate: [0, 20] }} />
+        <MapLibreGL.Images images={styleImages} />
         <MapLibreGL.UserLocation visible />
-        {visiblePins.map((p) => {
-          const icon = icons.find((i) => i.id === p.iconId);
-          return (
-            <MapLibreGL.PointAnnotation key={p.id} id={p.id} coordinate={[p.lng, p.lat]}>
-              <View style={styles.marker}>
-                {icon?.kind === "upload" ? (
-                  <MapLibreGL.Image source={{ uri: icon.localUri }} style={styles.markerImg} />
-                ) : (
-                  <View style={styles.dot} />
-                )}
-                <Text style={styles.markerLabel} numberOfLines={1}>
-                  {p.title}
-                </Text>
-              </View>
-            </MapLibreGL.PointAnnotation>
-          );
-        })}
+        <MapLibreGL.ShapeSource id="pins" shape={pinCollection}>
+          <MapLibreGL.SymbolLayer
+            id="pin-symbols"
+            style={{
+              iconImage: ["get", "iconId"],
+              iconSize: 0.35,
+              iconAllowOverlap: true,
+              iconIgnorePlacement: true,
+              textField: ["get", "title"],
+              textSize: 11,
+              textOffset: [0, 1.4],
+              textAnchor: "top",
+              textOptional: true,
+              textAllowOverlap: false,
+            }}
+          />
+        </MapLibreGL.ShapeSource>
       </MapLibreGL.MapView>
 
       <SafeAreaView style={styles.hud} pointerEvents="box-none">
+        <Pressable style={styles.hudBtn} onPress={() => setShowPins(true)}>
+          <Text style={styles.hudTxt}>Pins</Text>
+        </Pressable>
         <Pressable style={styles.hudBtn} onPress={() => setShowFolders(true)}>
           <Text style={styles.hudTxt}>Folders</Text>
         </Pressable>
@@ -177,6 +215,32 @@ export default function App() {
             </Pressable>
           </View>
         </View>
+      </Modal>
+
+      <Modal visible={showPins} animationType="slide">
+        <SafeAreaView style={styles.modalPage}>
+          <Text style={styles.h}>Pins</Text>
+          <Text style={styles.meta}>Tap a pin to fly the map there.</Text>
+          <FlatList
+            data={pins}
+            keyExtractor={(p) => p.id}
+            ListEmptyComponent={<Text style={styles.meta}>Long-press the map to add a pin.</Text>}
+            renderItem={({ item }) => (
+              <Pressable style={styles.listRow} onPress={() => flyToPin(item)}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.pinTitle}>{item.title}</Text>
+                  <Text style={styles.meta}>
+                    {item.lat.toFixed(4)}, {item.lng.toFixed(4)}
+                  </Text>
+                </View>
+                <Text style={styles.link}>Go</Text>
+              </Pressable>
+            )}
+          />
+          <Pressable onPress={() => setShowPins(false)}>
+            <Text style={styles.link}>Close</Text>
+          </Pressable>
+        </SafeAreaView>
       </Modal>
 
       <Modal visible={showFolders} animationType="slide">
@@ -237,13 +301,9 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   map: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
-  hud: { position: "absolute", top: 12, left: 12, right: 12, flexDirection: "row", gap: 8 },
+  hud: { position: "absolute", top: 12, left: 12, right: 12, flexDirection: "row", gap: 8, flexWrap: "wrap" },
   hudBtn: { backgroundColor: "#fff", paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, elevation: 2 },
   hudTxt: { fontWeight: "600" },
-  marker: { alignItems: "center", width: 88 },
-  markerImg: { width: 36, height: 36, borderRadius: 18 },
-  dot: { width: 16, height: 16, borderRadius: 8, backgroundColor: "#c0392b", borderWidth: 2, borderColor: "#fff" },
-  markerLabel: { fontSize: 11, backgroundColor: "#fff", paddingHorizontal: 4 },
   sheet: {
     marginTop: "auto",
     backgroundColor: "#fff",
@@ -255,6 +315,7 @@ const styles = StyleSheet.create({
   modalPage: { flex: 1, padding: 16, gap: 12 },
   h: { fontSize: 20, fontWeight: "700" },
   meta: { color: "#555" },
+  pinTitle: { fontWeight: "600", fontSize: 16 },
   input: { borderWidth: 1, borderColor: "#ddd", borderRadius: 8, padding: 10 },
   row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
   rowWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
@@ -262,6 +323,6 @@ const styles = StyleSheet.create({
   chipOn: { backgroundColor: "#e8f0fe", borderColor: "#3b6" },
   primary: { backgroundColor: "#1a73e8", paddingHorizontal: 14, paddingVertical: 10, borderRadius: 8 },
   primaryTxt: { color: "#fff", fontWeight: "600" },
-  listRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: "#ddd" },
+  listRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: "#ddd" },
   link: { color: "#1a73e8", fontSize: 16, marginTop: 16 },
 });
