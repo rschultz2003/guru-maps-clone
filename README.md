@@ -1,74 +1,62 @@
-# Guru Maps Clone (working name)
+# Offline Maps (Guru Maps-inspired)
 
-Privacy-first offline maps for iOS, Android, and later macOS. Inspired by [Guru Maps](https://apps.apple.com/us/app/guru-offline-maps-gps-tracker/id321745474): OpenStreetMap tiles, custom pins with user-uploaded icons, folders, multi-stop routes, GPS tracks, GPX/KML, offline search, 3D terrain, sync, CarPlay, no ads.
+Privacy-first offline maps: OpenStreetMap via MapLibre, custom uploaded pin icons, folders, multi-stop routes, GPS tracks (GPX/KML), offline search, 3D terrain, optional sync, CarPlay (later), no ads.
 
-**Core differentiator:** tap the map → pick or upload an image/icon → pin that exact location. Icons stay on-device first and sync when the user wants.
+**Not affiliated with Guru Maps, iBiker, or WPG.** Feature parity target only.
 
-> Product note: the live branded product in this org is **BossMaps** (`rschultz2003/bossmaps`). This repo is the public clone spec + scaffold. Do not ship App Store listings as “Guru Maps”.
+**Ship name:** [BossMaps](https://github.com/rschultz2003/bossmaps) (`com.studiodorje.bossmaps`). This repo is the public spec + early scaffold. Do not brand the App Store listing as a Guru Maps clone.
 
-## Feature parity target (current Guru Maps App Store)
+## Core differentiator
 
-| Area | Spec |
+Upload any image/icon and drop it on a map coordinate. Icons live with the pin (local first; sync later). Folders group pins. Long-press map → new pin → pick built-in or custom icon.
+
+## Feature matrix (parity target)
+
+| Area | Target |
 |---|---|
-| Offline maps | Download country/region packs (OSM / vector). Monthly pack updates. |
-| Navigation | Voice turn-by-turn, auto-reroute, lane guidance. Modes: car, bike, truck, walk, straight-line (off-road / sailing). |
-| Routes | Multi-stop + custom waypoints. Fastest / shortest. Save plans. GPX/KML export. |
-| 3D terrain | True 3D relief, contours, hillshade, topo overlays, elevation + slope profiles. |
-| GPS tracks | One-tap record (background). Live speed, distance, time, altitude. Graphs. GPX/KML. |
-| Search | Offline by name, address, category, coordinates. Typeahead, multi-language. |
-| POI | Custom pins + **user-uploaded icons**. Folders / collections. Share. |
-| Hours | Opening hours when OSM / Places data exists. |
-| Sync | Account backup of markers, tracks, collections across devices. |
-| Import maps | MBTiles / sqlitedb custom sources. |
-| CarPlay | Offline map + voice directions on head unit. |
-| Monetization | Free + Pro. No ads. Pro: unlimited packs, unlimited markers/tracks, satellite + specialty layers. |
-| Privacy | Location stays on device unless user enables sync. No ad SDKs. No sale of location. |
+| Offline maps | Download country/region vector packs (OSM). Monthly pack updates. |
+| Navigation | Offline TBT, auto-reroute, lane hints. Modes: car, bike, truck, walk, straight-line. |
+| Routes | Multi-stop, fastest/shortest, save, GPX/KML export. |
+| Terrain | Hillshade / relief / contours (True 3D where GPU allows). |
+| Tracks | Record in background, live speed/distance/time/elevation, charts, GPX/KML. |
+| Search | Offline name / address / category / coordinates, typeahead, multi-language. |
+| Pins | Custom icons (user upload), folders/collections, share. |
+| Hours | OSM opening hours when present. |
+| Sync | Account backup of markers, tracks, collections (LWW). |
+| CarPlay | Offline maps + voice (Phase 6). |
+| Privacy | No ads. Location on-device unless user opts into sync. |
+| Pro | Unlimited packs / markers / tracks; satellite + specialist layers. Free caps: 15 markers, 15 tracks, 3 packs. |
 
-## Tech stack (locked for MVP)
+## Tech stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| App | **Expo + React Native** (TypeScript) | Fast iteration, EAS, shared with BossMaps. Flutter is the fallback if RN MapLibre offline packs stall. |
-| Maps | **MapLibre GL Native** (`@maplibre/maplibre-react-native`) | OSM-friendly, offline style + tiles, no Google Maps ToS. |
-| Tiles | OpenMapTiles / Protomaps PMTiles + regional MBTiles | Downloadable packs. |
-| Routing | Valhalla or OSRM graph packs offline; GraphHopper as online fallback | Offline nav later. |
-| Search | Offline geocoder index (Pelias extract or compact SQLite / Who’s On First subset) | Offline typeahead. |
-| Local DB | SQLite via `expo-sqlite` + Drizzle | Pins, folders, tracks, icon metadata. |
-| Icons | On-device filesystem (`expo-file-system`) + optional object store | Upload images → hashed files → pin.iconId. |
-| Auth / sync | Optional account: Clerk or Better Auth + Postgres + S3-compatible | Phase 3. Local-first CRDT or last-write-wins per entity. |
-| Pro | RevenueCat | IAP without building store glue twice. |
-| CarPlay | Native iOS module after MVP | Phase 4. |
+- **Client:** React Native + Expo + MapLibre (`@maplibre/maplibre-react-native`) + expo-dev-client
+- **Tiles:** OSM vector (MapTiler / self-hosted tiles + offline pack manager)
+- **Routing:** offline-capable engine (Valhalla or OSRM pack; straight-line fallback)
+- **Storage:** SQLite / MMKV on device; icon files in app documents
+- **Sync API:** Hono + Postgres + object storage for icons (Phase 4+)
+- **Auth:** Clerk or email magic (optional)
+- **IAP:** RevenueCat (Pro monthly / yearly / lifetime)
 
-## Repo layout (target after MVP scaffold)
+## Repo layout
 
 ```
-apps/mobile/          Expo RN app
-packages/core/        Shared types, GPX/KML, geo utils
-packages/map/         MapLibre style, offline pack manager
-docs/                 PLAN.md lives at root
+PLAN.md              Phases
+CURSOR_AGENT.md      Cloud-agent brief
+apps/mobile          Expo app (if present here)
 ```
 
-## MVP (Phase 1) — ship this first
+Live product code lives in **rschultz2003/bossmaps**.
 
-1. Full-screen MapLibre map (online OSM style first; pack download stub).
-2. Long-press / tap → create pin at lat/lng.
-3. **Custom icon upload**: camera roll or files → resize/square crop → store locally → render as map symbol.
-4. Built-in icon set + “use my image”.
-5. Pin editor: title, notes, folder, icon.
-6. Folders / collections: create, rename, move pins, show/hide on map.
-7. Pin list + tap-to-fly.
-8. Offline-capable local store (pins + icons survive kill).
-9. No account required.
+## Run
 
-## Run (after scaffold)
+Prefer `bossmaps/apps/mobile`:
 
 ```bash
-cd apps/mobile
-npx expo start
+cd apps/mobile && npm install && npm start
 ```
 
-## License / data
+Dev client required for MapLibre.
 
-Map data © OpenStreetMap contributors. Do not rebrand as Guru Maps. Icon uploads remain the user’s files.
+## License
 
-See [PLAN.md](./PLAN.md) for phases, API sketch, and Cursor agent brief.
+Private product work. OSM data © OpenStreetMap contributors (ODbL).
