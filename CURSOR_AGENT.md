@@ -1,33 +1,35 @@
-# Cursor Cloud Agent — Phase 1 MVP
+# Cursor Cloud Agent brief — MVP
 
-Repo: `https://github.com/rschultz2003/guru-maps-clone`
+Repo: https://github.com/rschultz2003/guru-maps-clone
+Branch from `main`. Open a PR (`autoCreatePR: true`).
+Model: composer-2 / Composer 2.5 (or default). No Claude.
 
-```bash
-export CURSOR_API_KEY="YOUR_KEY"
+## Goal
 
-curl -sS -X POST https://api.cursor.com/v1/agents \
-  -H "Authorization: Bearer $CURSOR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt": {
-      "text": "Build Phase 1 MVP of this offline maps app (Guru Maps-inspired, NEVER brand the product Guru Maps). Repo already has apps/mobile Expo TS scaffold.\n\nDo:\n1. Keep Expo + React Native + TypeScript in apps/mobile.\n2. Full-screen MapLibre GL map (@maplibre/maplibre-react-native). OSM/OpenFreeMap or demo style. NO Google Maps.\n3. Core differentiator: long-press or tap map → create pin at lat/lng → icon sheet with built-in icons + Upload from camera roll (expo-image-picker) → resize to 128 and 256 PNG, strip EXIF GPS, save under icons/{sha256}.png via expo-file-system → register IconAsset → render that image as the MapLibre symbol for the pin.\n4. Pin editor: title, notes, folder, icon.\n5. Folders/collections: create, rename, move pins, show/hide layer.\n6. Persist pins, folders, icon metadata in expo-sqlite (or AsyncStorage fallback documented). Survive app kill.\n7. Pin list + tap-to-fly-to.\n8. Offline pack manager UI stub (download region placeholder).\n9. README run steps: cd apps/mobile && npx expo start.\n10. Open a PR (autoCreatePR). Do not merge. Do not add analytics/ad SDKs.\n\nDone when: simulator user picks a photo, drops a pin, sees that photo as the marker, files it in a folder, kills the app, data remains."
-    },
-    "source": {
-      "repository": "https://github.com/rschultz2003/guru-maps-clone",
-      "ref": "main"
-    },
-    "target": {
-      "autoCreatePr": true
-    },
-    "model": "composer-2"
-  }'
-```
+Finish the Expo MapLibre MVP:
 
-If `composer-2` is rejected, omit `model` and retry (account default).
+1. Map renders OSM style.
+2. Long-press creates a pin.
+3. User can upload a custom icon/image and attach it to that pin.
+4. Pins persist locally; folders group them.
+5. Offline-ready structure (local store + hook for tile packs).
 
-List / follow:
+## Constraints
 
-```bash
-curl -sS https://api.cursor.com/v1/agents -H "Authorization: Bearer $CURSOR_API_KEY"
-curl -sS https://api.cursor.com/v1/agents/AGENT_ID -H "Authorization: Bearer $CURSOR_API_KEY"
-```
+- React Native + Expo. MapLibre only (not Google Maps).
+- Do not brand UI as "Guru Maps". Working title: Offline Maps / BossMaps.
+- Do not add IAP, auth, or App Store submit.
+- Keep TypeScript strict.
+- Small, reviewable PR.
+
+## Files already present
+
+`apps/mobile/App.tsx`, `src/store.ts`, `src/types.ts`, `src/icons.ts`, `src/builtinIcons.ts`.
+
+Extend these. Do not rewrite from scratch unless they are broken.
+
+## Done when
+
+- `npx tsc --noEmit` in `apps/mobile` is clean (or documented).
+- README run steps still work.
+- PR description lists screens and how custom icon upload works.

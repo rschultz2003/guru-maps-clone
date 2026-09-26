@@ -1,75 +1,100 @@
 # Master plan
 
-Updated 25 Sep 2026 (AEST). Ship vehicle: **BossMaps** (`rschultz2003/bossmaps`). This repo holds the public spec.
+Target: feature parity with current Guru Maps (App Store), plus easier custom-icon upload.
+Ship brand: **BossMaps**. This repo is the public spec/scaffold.
 
-## Architecture
+## Phase 0 — Foundations (done / keep current)
+
+- Expo + TypeScript app under `apps/mobile`
+- Pin / folder / icon types
+- Local store
+- Built-in icon catalog
+- Custom icon file copy into app documents
+
+## Phase 1 — MVP (now)
+
+**Must ship**
+
+- MapLibre map, OSM vector style
+- User location (when permitted)
+- Long-press → create pin at coordinate
+- Pin editor: name, notes, folder, color, icon
+- **Custom icon upload** (photo library / files) → stored locally → rendered on map
+- Folders: create, rename, nest-optional, show/hide
+- Pin list + tap-to-fly
+- Delete pin / delete custom icon (unreferenced)
+- Offline-first local DB (no login)
+- Free-tier caps stub: 15 markers (enforce later with RevenueCat)
+
+**Acceptance**
+
+- Drop 10 pins with mixed built-in and uploaded icons; restart app; all persist.
+- Hide a folder; its pins leave the map; show again.
+- Custom PNG/JPEG/WebP icons render at pin size without crashing MapLibre.
+
+## Phase 2 — Offline maps + search
+
+- Region pack download (country / metro)
+- Pack manager UI (size, date, delete)
+- Offline style + fallback when offline
+- Offline geocoder (name, address, category, lon/lat)
+- Typeahead
+
+## Phase 3 — Routes + navigation
+
+- Multi-stop planner
+- Fastest / shortest
+- Straight-line mode
+- Offline routing pack (Valhalla/OSRM)
+- TBT voice + reroute (online first if packs lag)
+- Save route; export GPX/KML
+
+## Phase 4 — Tracks
+
+- Background GPS record
+- Live stats: speed, distance, time, elevation
+- Elevation chart
+- Pause / resume
+- GPX / KML export
+- Track list + overlay on map
+
+## Phase 5 — Sync + Pro
+
+- Optional account
+- Sync pins, folders, custom icons, tracks, routes (LWW)
+- Object storage for icons
+- RevenueCat Pro: unlimited packs/markers/tracks; satellite + specialist layers
+- Free: 15 markers, 15 tracks, 3 packs
+- No ads
+
+## Phase 6 — Terrain + CarPlay + polish
+
+- Hillshade / 3D terrain where supported
+- CarPlay offline map + voice
+- Opening hours from OSM
+- Share folder / pin
+- GeoJSON overlay
+- Privacy policy, location purpose strings, App Store assets
+
+## Data model (MVP)
 
 ```
-[Expo RN + MapLibre]
-  MapView (vector style + hillshade)
-  Pin layer (custom icon images registered in style)
-  Route layer + track recorder
-  Offline pack manager
-        |
-        +-- local SQLite (pins, folders, tracks, packs)
-        +-- local icon files
-        |
-[optional] Sync API (Hono)
-  users, collections, pins, tracks (LWW)
-  object store for icon blobs
+Folder { id, name, parentId?, visible, createdAt, updatedAt }
+Icon   { id, kind: builtin|custom, name, uri, createdAt }
+Pin    { id, lat, lng, name, notes, folderId?, iconId, color?, createdAt, updatedAt }
 ```
 
-### Why RN/Expo not Flutter
+## Privacy
 
-BossMaps is already RN + MapLibre. Do not rewrite.
+- Location stays on device unless user enables sync.
+- No third-party ads or trackers.
+- Custom icons never leave the device until sync is on.
+- OSM attribution required on the map.
 
-### Icon pipeline (differentiator)
+## Cloud agent brief
 
-1. User picks image (camera / library / files).
-2. Resize/normalize (e.g. 128² PNG, transparent).
-3. Store file + `iconId` on pin.
-4. Register image with MapLibre `addImage` before symbol layer render.
-5. On sync, upload blob; other devices pull + register.
+See `CURSOR_AGENT.md`. Model: Composer 2 / Composer 2.5 or Grok 4.6. Open a PR; do not merge to main without review. Do not submit to App Store.
 
-## Phases
+## Parallel product repo
 
-### Phase 0 — Scaffold
-Expo app, MapLibre map, location permission, glass map chrome.
-
-### Phase 1 — MVP (current priority if clone scaffold lags)
-- Long-press drop pin
-- Custom icon upload + built-in set
-- Pin edit (name, notes, folder, color)
-- Folders / collections
-- Offline pack download for visible region (or country list)
-- Offline search stub (local POI index or pack gazetteer)
-
-### Phase 2 — Navigation + routes
-Multi-stop planner, car/bike/walk, export GPX/KML.
-
-### Phase 3 — Tracks + terrain
-Background GPS record, stats + charts, hillshade/3D pitch.
-
-### Phase 4 — Sync + Pro
-Auth, LWW sync, RevenueCat gates (15/15/3 free), satellite layer.
-
-### Phase 5 — Parity polish
-Truck + straight-line, opening hours, share folder, voice steps, no-ads audit.
-
-### Phase 6 — Platforms
-CarPlay, watch, web viewer. Human App Store submit only with Reuben approval.
-
-## Coding agents
-
-Composer 2.5 or Grok 4.6 only. No Claude. No App Store submit / spend without CoS + Reuben.
-
-## Cursor Cloud Agents
-
-POST `https://api.cursor.com/v1/agents` with repo `https://github.com/rschultz2003/guru-maps-clone` or prefer `bossmaps`, `autoCreatePR: true`, model `composer-2`.
-
-Prompt must: scaffold/continue Expo+MapLibre, implement custom icon upload on pins, offline pack hook, open a PR. Never brand UI as Guru Maps.
-
-## Owners
-
-- Product code: BossMaps Bot (`rschultz2003/bossmaps`)
-- Coordination: BossMaps Manager + Chief of Staff
+`rschultz2003/bossmaps` is the branded app. Keep feature work aligned. Do not duplicate IAP or ASC work here.
