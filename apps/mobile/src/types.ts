@@ -22,6 +22,8 @@ export type Pin = {
   notes: string;
   folderId: string | null;
   iconId: string;
+  /** Label halo / accent color (hex). */
+  color: string | null;
   createdAt: number;
   updatedAt: number;
 };

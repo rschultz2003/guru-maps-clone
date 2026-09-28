@@ -1,4 +1,5 @@
 import * as Crypto from "expo-crypto";
+import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
@@ -23,17 +24,7 @@ async function sha256File(uri: string): Promise<string> {
   return bufferToHex(digest);
 }
 
-export async function pickAndStoreIcon(): Promise<IconAsset | null> {
-  const res = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    quality: 1,
-    allowsEditing: true,
-    aspect: [1, 1],
-    exif: false,
-  });
-  if (res.canceled || !res.assets[0]) return null;
-
-  const src = res.assets[0].uri;
+async function storeResizedIconFromUri(src: string): Promise<IconAsset | null> {
   const small = await ImageManipulator.manipulateAsync(
     src,
     [{ resize: { width: 128, height: 128 } }],
@@ -64,4 +55,37 @@ export async function pickAndStoreIcon(): Promise<IconAsset | null> {
   const icon: IconAsset = { id: hash, kind: "upload", localUri: path128, width: 128, height: 128 };
   upsertIcon(icon);
   return icon;
+}
+
+/** Pick from the device photo library, resize to map-friendly PNGs, persist under app documents. */
+export async function pickAndStoreIconFromLibrary(): Promise<IconAsset | null> {
+  const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!perm.granted) {
+    throw new Error("Photo library permission is required to upload a custom icon.");
+  }
+  const res = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    quality: 1,
+    allowsEditing: true,
+    aspect: [1, 1],
+    exif: false,
+  });
+  if (res.canceled || !res.assets[0]) return null;
+  return storeResizedIconFromUri(res.assets[0].uri);
+}
+
+/** Pick an image file (PNG/JPEG/WebP) from the system file picker. */
+export async function pickAndStoreIconFromFiles(): Promise<IconAsset | null> {
+  const res = await DocumentPicker.getDocumentAsync({
+    type: ["image/png", "image/jpeg", "image/webp", "image/*"],
+    copyToCacheDirectory: true,
+    multiple: false,
+  });
+  if (res.canceled || !res.assets?.[0]?.uri) return null;
+  return storeResizedIconFromUri(res.assets[0].uri);
+}
+
+/** @deprecated Use pickAndStoreIconFromLibrary */
+export async function pickAndStoreIcon(): Promise<IconAsset | null> {
+  return pickAndStoreIconFromLibrary();
 }
