@@ -1,35 +1,33 @@
-# Cursor Cloud Agent brief — MVP
+# Cursor Cloud Agent brief — Phase 1 MVP
 
 Repo: https://github.com/rschultz2003/guru-maps-clone
-Branch from `main`. Open a PR (`autoCreatePR: true`).
-Model: composer-2 / Composer 2.5 (or default). No Claude.
+Starting ref: `main`
+Model: `composer-2` (or account default)
+autoCreatePR: true
+Do not merge. Do not submit to the App Store. Not affiliated with Guru Maps.
 
-## Goal
+## Task
 
-Finish the Expo MapLibre MVP:
+Finish the Phase 1 MVP in `apps/mobile` (Expo + TypeScript + MapLibre):
 
-1. Map renders OSM style.
-2. Long-press creates a pin.
-3. User can upload a custom icon/image and attach it to that pin.
-4. Pins persist locally; folders group them.
-5. Offline-ready structure (local store + hook for tile packs).
+1. MapLibre map with an OSM style and visible OSM attribution.
+2. Long-press the map to create a pin at that coordinate.
+3. Pin editor: name, notes, folder, built-in icon, and **custom icon upload** from the photo library (PNG/JPEG/WebP). Copy the file into the app documents directory and persist the URI.
+4. Render custom icons on the map via MapLibre style images (not only a colored dot).
+5. Folders: create, rename, show/hide. Hidden folder pins must not render.
+6. Pin list with tap-to-fly.
+7. SQLite (or the existing local store, upgraded if needed) so pins, folders, and icon metadata survive restart.
+8. Delete pin. Do not crash if an icon file is missing.
+9. Free-tier stub: warn at 15 markers (do not add IAP).
+10. README run notes if setup changes.
 
-## Constraints
+## Out of scope
 
-- React Native + Expo. MapLibre only (not Google Maps).
-- Do not brand UI as "Guru Maps". Working title: Offline Maps / BossMaps.
-- Do not add IAP, auth, or App Store submit.
-- Keep TypeScript strict.
-- Small, reviewable PR.
+Navigation, track recording, sync, CarPlay, 3D terrain, RevenueCat, App Store submission.
 
-## Files already present
+## Acceptance
 
-`apps/mobile/App.tsx`, `src/store.ts`, `src/types.ts`, `src/icons.ts`, `src/builtinIcons.ts`.
-
-Extend these. Do not rewrite from scratch unless they are broken.
-
-## Done when
-
-- `npx tsc --noEmit` in `apps/mobile` is clean (or documented).
-- README run steps still work.
-- PR description lists screens and how custom icon upload works.
+- 10 mixed pins persist across relaunch and render.
+- Folder hide/show works.
+- Custom images render at pin size.
+- Typecheck passes.
