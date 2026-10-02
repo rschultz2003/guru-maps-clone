@@ -12,21 +12,21 @@ Upload any image or icon and drop it on a map coordinate. The icon is stored wit
 
 ## Feature matrix (current Guru Maps App Store parity)
 
-| Area | Target |
-|---|---|
-| Offline maps | Download country or region vector packs (OSM). Monthly pack updates. Import MBTiles / sqlitedb. |
-| Navigation | Voice turn-by-turn, auto-reroute, lane hints. Modes: car, bike, truck, walk, straight-line (sailing / off-road). |
-| Routes | Multi-stop with custom waypoints. Fastest or shortest. Save plans. Export GPX/KML. |
-| Terrain | True 3D relief, contours, hillshade, terrain overlays. Elevation profile and slope chart. |
-| Tracks | One-tap record (background). Live speed, distance, time, altitude. Interactive graphs. Export GPX/KML. |
-| Search | Offline by name, address, category, or coordinates. Typeahead. Multi-language. |
-| Pins | Custom pins and icons. Folders / collections. Share with friends. |
-| Hours | OSM opening hours when present. |
-| Sync | One account syncs markers, tracks, collections across devices. |
-| CarPlay | Offline maps + voice directions. |
-| Extra | Compass, scale, MGRS/UTM grid, GeoJSON overlay, single-finger zoom. |
-| Privacy | No ads. Location stays on device unless the user opts into sync. |
-| Pro | Unlimited packs / markers / tracks; satellite and specialist layers. Free caps: 15 markers, 15 tracks, 3 packs. |
+| Area | Target | Phase |
+|---|---|---|
+| Offline maps | Download country or region packs (OSM). Monthly pack updates. Import MBTiles / sqlitedb / PMTiles. | 2 |
+| Navigation | Voice turn-by-turn, auto-reroute, lane hints. Modes: car, bike, truck, walk, straight-line. | 3 |
+| Routes | Multi-stop with custom waypoints. Fastest or shortest. Save plans. Export GPX/KML. | 3 |
+| Terrain | True 3D relief, contours, hillshade, terrain overlays. Elevation profile and slope chart. | 6 |
+| Tracks | One-tap record (background). Live speed, distance, time, altitude. Interactive graphs. Export GPX/KML. | 4 |
+| Search | Offline by name, address, category, or coordinates. Typeahead. Multi-language. | 2 |
+| Pins | Custom pins and icons users upload. Folders / collections. Share. | 1 |
+| Hours | OSM opening hours when present. | 6 |
+| Sync | One account syncs markers, tracks, collections across devices. | 5 |
+| CarPlay | Offline maps + voice directions. | 6 |
+| Extra | Compass, scale, MGRS/UTM grid, GeoJSON overlay, single-finger zoom. | 6 |
+| Privacy | No ads. Location stays on device unless the user opts into sync. | all |
+| Pro | Unlimited packs / markers / tracks; satellite and specialist layers. Free caps: 15 markers, 15 tracks, 3 packs. | 5 |
 
 ## Architecture
 
@@ -37,6 +37,7 @@ Upload any image or icon and drop it on a map coordinate. The icon is stored wit
    +-- Offline pack manager (PMTiles / MBTiles, region index)
    +-- SQLite (pins, folders, icons metadata, tracks, routes)
    +-- Icon files in app documents (custom uploads)
+   +-- GPX/KML export (apps/mobile/src/export)
    +-- Optional sync client (outbox, last-write-wins)
           |
           v
@@ -54,14 +55,14 @@ Local-first: the app is fully usable with no account. Sync is opt-in.
 - **Tiles:** OSM vector style (MapTiler or self-hosted). Offline via PMTiles / MBTiles pack download.
 - **Routing:** Valhalla or OSRM offline pack; straight-line fallback. Online router until packs exist.
 - **Search:** Offline gazetteer (Nominatim extract or photon-style index) plus coordinate parser.
-- **Storage:** SQLite (`expo-sqlite`) for entities; MMKV for settings; icon bytes in `FileSystem.documentDirectory`.
-- **Tracks:** `expo-location` background updates; GPX/KML writers.
-- **Sync API:** Hono + Postgres + S3-compatible object storage.
-- **Auth:** optional email magic link or Clerk. No login required for MVP.
+- **Storage:** SQLite (`expo-sqlite`) for entities; icon bytes in `FileSystem.documentDirectory`.
+- **Tracks:** `expo-location` background updates; GPX/KML writers in `src/export`.
+- **Sync API:** Hono + Postgres + S3-compatible object storage. Contract in `docs/sync-api.md`.
+- **Auth:** optional email magic link. No login required for MVP.
 - **IAP:** RevenueCat (Pro monthly / yearly / lifetime).
 - **CarPlay:** native module after navigation exists (Phase 6). Not in the Expo Go path.
 
-Flutter was considered (better map plugins in some cases). React Native + Expo wins here because the existing scaffold is Expo, MapLibre RN is mature enough for symbol images, and CarPlay / IAP paths are already known in the BossMaps repo.
+Flutter was considered. React Native + Expo wins because the scaffold is already Expo, MapLibre RN supports symbol images for uploaded icons, and the BossMaps repo already has IAP paths.
 
 ## Repo layout
 
@@ -70,7 +71,8 @@ README.md            This spec
 PLAN.md              Phases and acceptance criteria
 CURSOR_AGENT.md      Cloud-agent brief
 STATUS.md            Build status
-apps/mobile          Expo MVP (map, pins, custom icons, folders)
+docs/sync-api.md     Phase 5 API contract
+apps/mobile          Expo MVP (map, pins, custom icons, folders, GPX/KML writers)
 ```
 
 ## MVP (Phase 1)

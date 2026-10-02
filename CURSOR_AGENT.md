@@ -16,10 +16,11 @@ Finish the Phase 1 MVP in `apps/mobile` (Expo + TypeScript + MapLibre):
 4. Render custom icons on the map via MapLibre style images (not only a colored dot).
 5. Folders: create, rename, show/hide. Hidden folder pins must not render.
 6. Pin list with tap-to-fly.
-7. SQLite (or the existing local store, upgraded if needed) so pins, folders, and icon metadata survive restart.
+7. SQLite so pins, folders, and icon metadata survive restart.
 8. Delete pin. Do not crash if an icon file is missing.
 9. Free-tier stub: warn at 15 markers (do not add IAP).
-10. README run notes if setup changes.
+10. Wire `src/export/gpx.ts` and `src/export/kml.ts` into a share action for a single pin (one-point GPX/KML). Do not build full track recording.
+11. README run notes if setup changes.
 
 ## Out of scope
 
@@ -30,4 +31,6 @@ Navigation, track recording, sync, CarPlay, 3D terrain, RevenueCat, App Store su
 - 10 mixed pins persist across relaunch and render.
 - Folder hide/show works.
 - Custom images render at pin size.
+- A pin can be exported as GPX and KML.
 - Typecheck passes.
+- Open a PR. Do not merge.
