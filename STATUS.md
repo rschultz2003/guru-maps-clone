@@ -1,14 +1,13 @@
-# Status — 4 Oct 2026 (CoS)
+# Status — 5 Oct 2026 (CoS)
 
-- Spec + scaffold: https://github.com/rschultz2003/guru-maps-clone
-- README.md and PLAN.md cover architecture, Expo + MapLibre stack, Hono sync later, phases 0–6.
+- Spec refreshed on main: README.md, PLAN.md, CURSOR_AGENT.md, scripts/launch-cloud-agent.sh.
+- Repo: https://github.com/rschultz2003/guru-maps-clone
+- Scaffold: `apps/mobile` Expo 51 + MapLibre + SQLite + image picker + GPX/KML writers.
 - Differentiator: custom icon/image upload onto coordinates.
-- Expo scaffold in `apps/mobile` (long-press pins, built-in + custom icons, SQLite, GPX/KML writers).
-- Sync contract in `docs/sync-api.md` (not implemented).
 - PRs:
-  - #1 closed: MapLibre style images, SQLite icon persist, pin list fly-to — https://github.com/rschultz2003/guru-maps-clone/pull/1
-  - #2 draft open: Phase 1 MVP polish — https://github.com/rschultz2003/guru-maps-clone/pull/2
-- Ship product is **BossMaps** (`rschultz2003/bossmaps`). Do not App Store-brand as a Guru Maps clone. Not affiliated with Guru Maps / WPG.
-- Cursor Cloud Agents API: no `CURSOR_API_KEY` in this environment. No agent run ID this pass. Key: https://cursor.com/dashboard/api
-- Launch command is in `scripts/launch-cloud-agent.sh` and CURSOR_AGENT.md.
-- Next: user runs the curl (model composer-2, autoCreatePR true) or reviews #2. Do not merge without review. Do not App Store submit.
+  - #1 closed: https://github.com/rschultz2003/guru-maps-clone/pull/1
+  - #2 draft open (updated 28 Sep 2026): https://github.com/rschultz2003/guru-maps-clone/pull/2
+- Cursor Cloud Agents: `CURSOR_API_KEY` is not in this environment. No agent run ID. Key: https://cursor.com/dashboard/api
+- Launch: `bash scripts/launch-cloud-agent.sh` (model composer-2, autoCreatePR true).
+- UI must not use the Guru Maps name or assets. Not affiliated.
+- Next: user runs the curl, or reviews #2. Do not merge without review. Do not App Store submit.

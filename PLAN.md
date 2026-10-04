@@ -1,147 +1,102 @@
-# Master plan — Guru Maps parity (BossMaps)
+# Master plan — Atlas Maps
 
-Target: feature parity with the current Guru Maps App Store listing (id 321745474 / Pro id 891362701): offline OSM maps, custom pins and icons, folders, multi-stop routes, GPS tracks with stats and GPX/KML, offline search, 3D terrain, sync, CarPlay, Apple Watch later, no ads, privacy-first.
-
-Core differentiator: easy upload of custom icons or images onto pin locations.
-
-Ship brand: **BossMaps** (`rschultz2003/bossmaps`). This repo is the public spec and Expo scaffold. Not affiliated with Guru Maps (Evgen Bodunov / WPG). Do not submit an App Store listing that uses the Guru Maps name or assets.
+Inspired by the public Guru Maps feature set. Original implementation. Not affiliated with Guru Maps.
 
 ## Architecture
 
 ```
-[Expo React Native + MapLibre native]
-   |
-   +-- Map screen (OSM style, camera, user location, symbol layer)
-   +-- Pin editor (name, notes, folder, color, builtin or uploaded icon)
-   +-- Offline pack manager (PMTiles / MBTiles, region index) — Phase 2
-   +-- SQLite (pins, folders, icons, tracks, routes)
-   +-- Icon files in app documents (custom uploads)
-   +-- GPX/KML writers (apps/mobile/src/export)
-   +-- Optional sync client (outbox, last-write-wins)
-          |
-          v
-[Hono API] -- Postgres (entities) + object storage (icons, GPX)
-          |
-          +-- Auth (magic link)
-          +-- RevenueCat webhooks (Pro entitlement)
+apps/mobile          Expo app (map, pins, icons, folders, later nav/tracks)
+packages/core        (later) shared types, GPX/KML, distance math
+services/sync        (later) Hono API: auth, pins, folders, icon blobs, tracks
+docs/                API contract and phase notes
 ```
 
-Local-first. The app is fully usable with no account. Sync is opt-in. Location never leaves the device unless sync is on.
-
-## Tech stack decision
-
-- **Client: React Native (Expo + dev client), not Flutter.** Scaffold already exists. `@maplibre/maplibre-react-native` supports custom style images, which is the differentiator path.
-- **Map SDK: MapLibre + OpenStreetMap.** No Google Maps (offline rights and license). Style URL configurable. Default a public OSM raster/vector style for MVP. Attribution always visible.
-- **Persistence:** `expo-sqlite` for entities. Icon binaries in `FileSystem.documentDirectory/icons/`, referenced by URI.
-- **Backend (Phase 5):** Hono, Postgres, S3-compatible object storage. Auth optional. Last-write-wins on `updatedAt` plus an outbox.
-- **Pro:** RevenueCat. Free caps stubbed in the client (15 markers, 15 tracks, 3 packs) and enforced when IAP lands. No ads in any tier.
-- **Privacy:** no ads, no analytics SDKs in MVP. Location purpose strings explain on-device use.
-
-Flutter remains a fallback only if MapLibre RN blocks custom symbol images on a target OS. Do not rewrite unless that happens.
-
-## Phase 0 — Foundations (done)
-
-- Expo + TypeScript app under `apps/mobile`
-- Pin / folder / icon types
-- SQLite store with builtin pin asset
-- Custom icon file copy into app documents
-
-## Phase 1 — MVP (current)
-
-**Must ship**
-
-- MapLibre map, OSM style, attribution
-- User location when permitted
-- Long-press → create pin at coordinate
-- Pin editor: name, notes, folder, color, icon
-- **Custom icon upload** (photo library / files) → stored locally → rendered as a MapLibre style image on the pin
-- Folders: create, rename, show/hide
-- Pin list + tap-to-fly
-- Delete pin; missing icon file must not crash
-- Offline-first local DB (no login)
-- Free-tier marker cap stub (15)
-
-**Acceptance**
-
-- Drop 10 pins with mixed built-in and uploaded icons; kill and relaunch; all persist and render.
-- Hide a folder; its pins leave the map; show again and they return.
-- Custom PNG/JPEG/WebP icons render at pin size without crashing MapLibre.
-- OSM attribution visible.
-- Typecheck passes.
-
-## Phase 2 — Offline maps + search
-
-- Region pack download (country / metro), progress, size, delete
-- Offline style + fallback when the device is offline
-- MBTiles / PMTiles / sqlitedb import hook
-- Offline geocoder: name, address, category, lon/lat
-- Typeahead, multi-language labels where the pack has them
-
-## Phase 3 — Routes + navigation
-
-- Multi-stop planner with custom waypoints
-- Fastest / shortest
-- Straight-line mode (sailing / off-road)
-- Modes: car, bike, truck, walk
-- Offline routing pack (Valhalla or OSRM); online router first if packs lag
-- Turn-by-turn voice + auto-reroute; lane hints when data exists
-- Save route; export GPX/KML via `apps/mobile/src/export`
-
-## Phase 4 — Tracks
-
-- Background GPS record (one tap)
-- Live stats: speed, distance, time, elevation
-- Elevation / speed / slope chart
-- Pause / resume; GPS filter for smoother tracks
-- GPX / KML export and import
-- Track list + overlay on the map
-
-## Phase 5 — Sync + Pro
-
-- Optional account
-- Sync pins, folders, custom icons, tracks, routes (last-write-wins)
-- Object storage for icons
-- RevenueCat Pro: unlimited packs, markers, tracks; satellite and specialist layers (cycling, outdoors, marine, ski)
-- Free: 15 markers, 15 tracks, 3 packs
-- No ads
-
-## Phase 6 — Terrain + CarPlay + polish
-
-- Hillshade / 3D terrain where the GPU allows
-- Contours overlay, elevation profile, slope chart
-- CarPlay offline map + voice
-- Apple Watch live stats (free) and independent recording (Pro) — later
-- Opening hours from OSM
-- Share folder / pin
-- GeoJSON overlay, MGRS/UTM grid, compass, scale, one-finger zoom
-- Privacy policy, location purpose strings, store assets
-
-## Data model
+On-device is source of truth until sync is enabled. Sync is opt-in.
 
 ```
-Folder { id, name, parentId?, visible, createdAt, updatedAt }
-Icon   { id, kind: builtin|upload, localUri, width, height }
-Pin    { id, lat, lng, title, notes, folderId?, iconId, createdAt, updatedAt }
-Track  { id, name, startedAt, endedAt, distanceM, durationS, folderId? }
-TrackPoint { trackId, seq, lat, lng, ele?, time, speed? }
-Route  { id, name, mode, preference: fastest|shortest|straight, folderId? }
-RouteStop { routeId, seq, lat, lng, name }
-MapPack { id, region, bytes, status, updatedAt }
-SyncOutbox { id, entity, entityId, op, payload, updatedAt }
+MapLibre MapView
+  OSM vector style + attribution
+  SymbolLayer (icon image id per pin)
+  LineLayer (route / track)
+SQLite: folders, pins, tracks, track_points, icon_assets
+FileSystem: icons/{id}.webp
 ```
 
-## Privacy
+Pin record: `id, name, notes, lat, lon, folderId, iconId, color, createdAt, updatedAt`.
+Icon record: `id, kind (builtin|upload), uri, width, height, mime`.
 
-- Location stays on device unless the user enables sync.
-- No third-party ads or trackers.
-- Custom icons never leave the device until sync is on.
-- OSM attribution required on the map.
-- Background location copy must state battery impact.
+## Tech choices
 
-## Cloud agent brief
+- React Native (Expo) over Flutter: scaffold already exists; `expo-image-picker` + FileSystem covers the differentiator.
+- MapLibre over Google/Mapbox: offline OSM styles, no per-load billing, style images for custom icons.
+- SQLite over AsyncStorage: query folders, hide/show, export.
+- Backend later: Hono + R2. Do not block MVP on it.
+- Pro tier later: unlimited pins/icons, offline region packs, 3D terrain, CarPlay. Free cap stub: warn at 15 markers.
 
-See `CURSOR_AGENT.md`. Model: `composer-2` (or default). `autoCreatePR: true`. Do not merge to main without review. Do not submit to the App Store.
+## Phase 0 — spec (done)
 
-## Parallel product repo
+README, PLAN, sync contract, Cloud Agent brief.
 
-`rschultz2003/bossmaps` is the branded app. Keep feature work aligned. Do not duplicate IAP or App Store Connect work in this repo.
+## Phase 1 — MVP (in progress)
+
+Acceptance:
+
+1. MapLibre map, OSM style, visible OSM attribution.
+2. Long-press creates a pin at that coordinate.
+3. Editor: name, notes, folder, built-in icon, custom upload (PNG/JPEG/WebP) copied into documents and persisted.
+4. Uploaded icons render as MapLibre style images at pin size, not only colored dots.
+5. Folders: create, rename, show/hide. Hidden folders do not render.
+6. Pin list, tap flies the camera.
+7. SQLite survives restart. Delete pin does not crash if the icon file is missing.
+8. Share one pin as GPX and KML (`src/export`).
+9. Free-tier stub warns at 15 markers. No IAP.
+10. Typecheck passes. PR opened. Do not merge. Do not submit to the App Store.
+
+Existing draft: https://github.com/rschultz2003/guru-maps-clone/pull/2
+
+## Phase 2 — offline maps and search
+
+- Region catalog (country / state bounding boxes).
+- Download PMTiles or MBTiles; switch style source to local file when the pack covers the viewport.
+- Offline search index inside the pack (name, address, category, lat/lon parse including MGRS/Plus codes later).
+- Import user MBTiles / sqlitedb.
+
+## Phase 3 — routes and navigation
+
+- Multi-stop planner, fastest vs shortest.
+- Valhalla/OSRM. Voice prompts. Reroute when off-route.
+- Modes: drive, bike, truck, walk, straight line.
+- Export route GPX/KML. Lane guidance is a stretch goal.
+
+## Phase 4 — tracks
+
+- Background location (expo-location / task manager).
+- Live speed, distance, time, altitude.
+- Charts (altitude and speed gradients).
+- GPX/KML export of the full track. GPS accuracy and distance filters.
+
+## Phase 5 — sync and Pro
+
+- Auth. Push/pull pins, folders, tracks. Icon blobs to object storage.
+- Conflict: last-write-wins on `updatedAt`, plus a device backup export.
+- RevenueCat: Pro unlocks packs, unlimited pins, sync.
+- No ads in any tier.
+
+## Phase 6 — terrain, CarPlay, extras
+
+- Hillshade + contour overlay. 3D terrain (MapLibre terrain / custom mesh).
+- Elevation profile on a route or track.
+- CarPlay: map template + navigation session (native module).
+- GeoJSON overlay, compass, scale, coordinate grid, bearing line, opening hours from OSM tags.
+
+## Non-goals
+
+- Cloning Guru Maps branding or assets.
+- Shipping with ads.
+- Uploading location by default.
+
+## Agent loop
+
+1. Finish Phase 1 on a branch and open a PR (`autoCreatePR: true`, model `composer-2`).
+2. Review #2 or the new PR. Do not merge blind.
+3. Next agent prompt is Phase 2 only after Phase 1 acceptance passes.
