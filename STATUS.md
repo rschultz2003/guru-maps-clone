@@ -1,12 +1,12 @@
-# Status — 5 Oct 2026 (CoS)
+# Status — 6 Oct 2026 (CoS)
 
-- Spec refreshed on main: README.md, PLAN.md, CURSOR_AGENT.md, scripts/launch-cloud-agent.sh.
+- Spec refreshed on main: README.md, PLAN.md, scripts/launch-cloud-agent.sh.
 - Repo: https://github.com/rschultz2003/guru-maps-clone
-- Scaffold: `apps/mobile` Expo 51 + MapLibre + SQLite + image picker + GPX/KML writers.
+- Scaffold: `apps/mobile` Expo + MapLibre + SQLite + image picker + GPX/KML writers.
 - Differentiator: custom icon/image upload onto coordinates.
 - PRs:
   - #1 closed: https://github.com/rschultz2003/guru-maps-clone/pull/1
-  - #2 draft open (updated 28 Sep 2026): https://github.com/rschultz2003/guru-maps-clone/pull/2
+  - #2 draft open: https://github.com/rschultz2003/guru-maps-clone/pull/2
 - Cursor Cloud Agents: `CURSOR_API_KEY` is not in this environment. No agent run ID. Key: https://cursor.com/dashboard/api
 - Launch: `bash scripts/launch-cloud-agent.sh` (model composer-2, autoCreatePR true).
 - UI must not use the Guru Maps name or assets. Not affiliated.

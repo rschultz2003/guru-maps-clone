@@ -18,20 +18,23 @@ MapLibre MapView
   OSM vector style + attribution
   SymbolLayer (icon image id per pin)
   LineLayer (route / track)
-SQLite: folders, pins, tracks, track_points, icon_assets
-FileSystem: icons/{id}.webp
+  TerrainSource (Phase 6)
+SQLite: folders, pins, tracks, track_points, icon_assets, routes
+FileSystem: icons/{id}.webp, packs/{region}.pmtiles
 ```
 
-Pin record: `id, name, notes, lat, lon, folderId, iconId, color, createdAt, updatedAt`.
-Icon record: `id, kind (builtin|upload), uri, width, height, mime`.
+Pin: `id, name, notes, lat, lon, folderId, iconId, color, createdAt, updatedAt`.
+Icon: `id, kind (builtin|upload), uri, width, height, mime`.
+Folder: `id, name, visible, sort`.
+Track: `id, name, folderId, startedAt, endedAt, distanceM, points[]`.
 
 ## Tech choices
 
-- React Native (Expo) over Flutter: scaffold already exists; `expo-image-picker` + FileSystem covers the differentiator.
+- React Native (Expo) over Flutter: scaffold exists; `expo-image-picker` + FileSystem covers the differentiator.
 - MapLibre over Google/Mapbox: offline OSM styles, no per-load billing, style images for custom icons.
 - SQLite over AsyncStorage: query folders, hide/show, export.
-- Backend later: Hono + R2. Do not block MVP on it.
-- Pro tier later: unlimited pins/icons, offline region packs, 3D terrain, CarPlay. Free cap stub: warn at 15 markers.
+- Backend later: Hono + R2 + D1. Do not block MVP on it.
+- Pro later: unlimited pins/icons, offline region packs, specialist layers, 3D terrain, CarPlay. Free cap stub: warn at 15 markers. No ads in any tier.
 
 ## Phase 0 — spec (done)
 
@@ -58,7 +61,7 @@ Existing draft: https://github.com/rschultz2003/guru-maps-clone/pull/2
 
 - Region catalog (country / state bounding boxes).
 - Download PMTiles or MBTiles; switch style source to local file when the pack covers the viewport.
-- Offline search index inside the pack (name, address, category, lat/lon parse including MGRS/Plus codes later).
+- Offline search index inside the pack (name, address, category, lat/lon parse; MGRS and Plus codes later).
 - Import user MBTiles / sqlitedb.
 
 ## Phase 3 — routes and navigation
@@ -70,30 +73,31 @@ Existing draft: https://github.com/rschultz2003/guru-maps-clone/pull/2
 
 ## Phase 4 — tracks
 
-- Background location (expo-location / task manager).
+- Background location (`expo-location` / task manager).
 - Live speed, distance, time, altitude.
 - Charts (altitude and speed gradients).
-- GPX/KML export of the full track. GPS accuracy and distance filters.
+- GPX/KML/GeoJSON export of the full track. GPS accuracy and distance filters.
 
 ## Phase 5 — sync and Pro
 
 - Auth. Push/pull pins, folders, tracks. Icon blobs to object storage.
 - Conflict: last-write-wins on `updatedAt`, plus a device backup export.
-- RevenueCat: Pro unlocks packs, unlimited pins, sync.
+- RevenueCat: Pro unlocks packs, unlimited pins, sync, specialist layers.
 - No ads in any tier.
 
 ## Phase 6 — terrain, CarPlay, extras
 
 - Hillshade + contour overlay. 3D terrain (MapLibre terrain / custom mesh).
-- Elevation profile on a route or track.
+- Elevation profile and slope chart on a route or track.
 - CarPlay: map template + navigation session (native module).
-- GeoJSON overlay, compass, scale, coordinate grid, bearing line, opening hours from OSM tags.
+- GeoJSON overlay, compass, scale, coordinate formats, bearing line, opening hours from OSM tags.
 
 ## Non-goals
 
 - Cloning Guru Maps branding or assets.
 - Shipping with ads.
 - Uploading location by default.
+- App Store submission from an agent.
 
 ## Agent loop
 

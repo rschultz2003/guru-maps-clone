@@ -1,57 +1,60 @@
-# Atlas Maps (Guru Maps feature-parity spec)
+# Atlas Maps
 
-Working name: **Atlas Maps** (package `atlas-maps`). Product ship name may be **BossMaps**.
+Working name: **Atlas Maps** (package `atlas-maps`). Ship name may be **BossMaps**.
 
-This repo is an original offline maps client inspired by the public feature list of Guru Maps (App Store id 321745474). It is **not affiliated** with Guru Maps / WPG / Evgen Bodunov. Do not copy their name, icons, screenshots, or map styles into the app UI or store listing.
-
-Maps are OpenStreetMap-based. OSM attribution must stay visible.
+Original offline maps client matching the public Guru Maps feature list (App Store id 321745474 / Pro id 891362701). **Not affiliated** with Guru Maps, WPG, or Evgen Bodunov. Do not copy their name, icons, screenshots, or styles into the UI or store listing. OpenStreetMap attribution stays visible.
 
 Repo: https://github.com/rschultz2003/guru-maps-clone
 
 ## Core differentiator
 
-Users upload their own icons or photos and pin them to exact coordinates. Icons are stored on device (and, later, in the user account), rendered as map symbols, and organized in folders. That is the MVP bar.
+Users upload their own icons or photos and drop them on exact coordinates. Icons are stored on device (and later in the account), rendered as map symbols, and grouped in folders. That is the MVP bar.
 
-## Feature parity (public App Store listing)
+## Feature parity (public listing)
 
 | Area | Behavior |
 | --- | --- |
-| Offline maps | Download country/region packs once. Use with no signal. Monthly OSM refresh. Import MBTiles / sqlitedb. |
+| Offline maps | Download country or region packs once. Works with no signal. Monthly OSM refresh. Import `.mbtiles` and `.sqlitedb`. |
 | Navigation | Voice turn-by-turn, auto reroute, lane guidance. Modes: drive, bike, truck, walk, straight-line (off-road / marine). |
 | Routes | Multi-stop, custom waypoints, fastest or shortest, save plans, export GPX/KML. |
 | 3D terrain | True 3D relief, contours, hillshade, topo overlay, elevation profile and slope chart. |
-| Tracks | One-tap record (background), live speed/distance/time/altitude, interactive charts, GPX/KML export. |
-| Search | Offline by name, address, category, or coordinates. Instant typeahead. Multi-language. |
-| POI | Custom pins and uploaded icons. Folders/collections. Share. Opening hours when data exists. |
-| Sync | One account across iOS, Android, later desktop. Markers, tracks, collections. |
-| CarPlay | Offline map + voice navigation. |
-| Privacy | No ads. Location stays on device unless the user turns sync on. |
-| Extra | One-finger zoom, compass, scale bar, MGRS/UTM/Plus codes, GeoJSON overlay, GPS accuracy filter, bearing line to a pin. |
+| Tracks | One-tap record (background), live speed / distance / time / altitude, charts, GPX/KML/GeoJSON export. |
+| Search | Offline by name, address, category, or coordinates. Typeahead. Multi-language. |
+| POI | Custom pins and uploaded icons. Folders/collections. Share. Opening hours when OSM has them. |
+| Sync | One account across iOS and Android (desktop later). Markers, tracks, collections, icon blobs. |
+| CarPlay | Offline map and voice navigation. |
+| Privacy | No ads in any tier. Location stays on device unless the user turns sync on. |
+| Extra | Compass, scale, MGRS / UTM / Plus codes, GeoJSON and MapCSS overlay, GPS accuracy filter, bearing line to a pin, backup restore. |
+
+Pro (later): unlimited pins, tracks, and region downloads; satellite and specialist layers (cycling, outdoors, marine, ski). Free stub warns at 15 markers. No IAP in Phase 1.
 
 ## Stack
 
-- Mobile: Expo / React Native + TypeScript (`apps/mobile`). MapLibre (`@maplibre/maplibre-react-native`).
-- Local data: `expo-sqlite`. Icon files in the app documents directory.
-- Offline tiles: PMTiles or MBTiles regional packs, plus a raster/vector OSM style with attribution.
-- Routing (later): Valhalla or OSRM public instance, then self-hosted tiles+routing.
-- Search (later): on-device geocoder index extracted from the regional pack (Photon/Pelias extract or Nominatim dump subset).
-- Sync API (later): Hono on Cloudflare Workers, R2 for icon blobs, D1/Postgres for pins/tracks. See `docs/sync-api.md`.
-- Auth: email magic link or Sign in with Apple. Pro via RevenueCat (not in MVP).
-- Flutter was considered; Expo is already scaffolded and ships custom image upload faster.
+- Mobile: Expo / React Native + TypeScript in `apps/mobile`. Flutter was considered; Expo is already scaffolded and ships image upload faster.
+- Map: MapLibre (`@maplibre/maplibre-react-native`) with an OSM vector style. Custom icons are style images, not colored dots.
+- Local data: `expo-sqlite` for folders, pins, tracks, track points, icon metadata. Icon files in the documents directory (`icons/{id}.webp`).
+- Offline tiles (Phase 2): PMTiles or MBTiles regional packs. Switch the style source to a local file when the pack covers the viewport.
+- Routing (Phase 3): Valhalla or OSRM. Voice prompts via `expo-speech` first, native TTS later.
+- Search (Phase 2): on-device index extracted from the regional pack.
+- Sync (Phase 5): Hono on Cloudflare Workers, R2 for icon blobs, D1 for pins/tracks. Contract in `docs/sync-api.md`. Auth: magic link or Sign in with Apple. Pro via RevenueCat.
+- On-device is source of truth until sync is opted in.
 
-## Run the mobile scaffold
+## Run
 
 ```bash
 cd apps/mobile
 npm install
-npx expo start
+npx expo prebuild
+npx expo run:ios   # or run:android
 ```
 
-Dev build is required for MapLibre native modules (`npx expo prebuild` then run on a device/simulator). Expo Go is not enough.
+MapLibre needs a dev build. Expo Go is not enough.
 
 ## Phases
 
-See `PLAN.md`. Current code is Phase 1 scaffold: long-press pins, built-in and custom icons, folders, SQLite, GPX/KML writers.
+See `PLAN.md`. Current code is a Phase 1 scaffold: long-press pins, built-in and custom icons, folders, SQLite, GPX/KML writers.
+
+Open draft: https://github.com/rschultz2003/guru-maps-clone/pull/2
 
 ## Cloud Agent
 
@@ -59,5 +62,3 @@ See `PLAN.md`. Current code is Phase 1 scaffold: long-press pins, built-in and c
 export CURSOR_API_KEY=key_...   # https://cursor.com/dashboard/api
 bash scripts/launch-cloud-agent.sh
 ```
-
-Open draft: https://github.com/rschultz2003/guru-maps-clone/pull/2
