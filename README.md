@@ -2,13 +2,13 @@
 
 Working name: **Atlas Maps** (package `atlas-maps`). Ship name may be **BossMaps**.
 
-Original offline maps client matching the public Guru Maps feature list (App Store id 321745474 / Pro id 891362701). **Not affiliated** with Guru Maps, WPG, or Evgen Bodunov. Do not copy their name, icons, screenshots, or styles into the UI or store listing. OpenStreetMap attribution stays visible.
+Offline maps client matching the public feature list of Guru Maps (App Store id 321745474). **Not affiliated** with Guru Maps, WPG, or Evgen Bodunov. Do not copy their name, icons, screenshots, or styles into the UI or store listing. OpenStreetMap attribution stays visible.
 
 Repo: https://github.com/rschultz2003/guru-maps-clone
 
 ## Core differentiator
 
-Users upload their own icons or photos and drop them on exact coordinates. Icons are stored on device (and later in the account), rendered as map symbols, and grouped in folders. That is the MVP bar.
+Users upload their own icons or photos and drop them on exact coordinates. Icons are stored on device (and later in the account), rendered as MapLibre style images, and grouped in folders. That is the MVP bar.
 
 ## Feature parity (public listing)
 
@@ -30,7 +30,7 @@ Pro (later): unlimited pins, tracks, and region downloads; satellite and special
 
 ## Stack
 
-- Mobile: Expo / React Native + TypeScript in `apps/mobile`. Flutter was considered; Expo is already scaffolded and ships image upload faster.
+- Mobile: Expo / React Native + TypeScript in `apps/mobile`. Flutter was considered; Expo is already scaffolded and ships image upload faster. Native modules (MapLibre, background location, CarPlay) require a dev client, not Expo Go.
 - Map: MapLibre (`@maplibre/maplibre-react-native`) with an OSM vector style. Custom icons are style images, not colored dots.
 - Local data: `expo-sqlite` for folders, pins, tracks, track points, icon metadata. Icon files in the documents directory (`icons/{id}.webp`).
 - Offline tiles (Phase 2): PMTiles or MBTiles regional packs. Switch the style source to a local file when the pack covers the viewport.
@@ -62,3 +62,5 @@ Open draft: https://github.com/rschultz2003/guru-maps-clone/pull/2
 export CURSOR_API_KEY=key_...   # https://cursor.com/dashboard/api
 bash scripts/launch-cloud-agent.sh
 ```
+
+Agent target: finish Phase 1 only, open a PR, do not merge, do not submit to the stores.

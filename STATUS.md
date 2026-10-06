@@ -1,8 +1,8 @@
-# Status — 6 Oct 2026 (CoS)
+# Status — 7 Oct 2026 (CoS)
 
-- Spec refreshed on main: README.md, PLAN.md, scripts/launch-cloud-agent.sh.
+- Master plan refreshed on main: README.md, PLAN.md, scripts/launch-cloud-agent.sh.
 - Repo: https://github.com/rschultz2003/guru-maps-clone
-- Scaffold: `apps/mobile` Expo + MapLibre + SQLite + image picker + GPX/KML writers.
+- Scaffold already on main: `apps/mobile` Expo + MapLibre + SQLite + image picker + GPX/KML writers.
 - Differentiator: custom icon/image upload onto coordinates.
 - PRs:
   - #1 closed: https://github.com/rschultz2003/guru-maps-clone/pull/1
