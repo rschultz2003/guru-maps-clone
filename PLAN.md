@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps
 
-Updated 7 Oct 2026. Product target is public feature parity with Guru Maps (App Store id 321745474), under a different name. Not affiliated. Do not ship their trademarks or assets.
+Updated 8 Oct 2026. Product target is public feature parity with Guru Maps (App Store id 321745474), under a different name. Not affiliated. Do not ship their trademarks or assets.
 
 ## Product principles
 
@@ -116,3 +116,12 @@ Map + custom icon upload + pins + folders.
 ## Cursor Cloud Agent
 
 Launch with `scripts/launch-cloud-agent.sh`. Model `composer-2`. `autoCreatePR: true`. Agent must not merge.
+
+Key is not in the Chief of Staff environment. User runs:
+
+```bash
+export CURSOR_API_KEY=key_...   # https://cursor.com/dashboard/api
+bash scripts/launch-cloud-agent.sh
+```
+
+Equivalent curl is in `scripts/launch-cloud-agent.sh`.

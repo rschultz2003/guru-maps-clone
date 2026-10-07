@@ -1,6 +1,6 @@
 # Atlas Maps
 
-Working name: **Atlas Maps** (package `atlas-maps`). Ship name may be **BossMaps**.
+Working name: **Atlas Maps** (package `atlas-maps`). Store name may be **BossMaps**.
 
 Offline maps client matching the public feature list of Guru Maps (App Store id 321745474). **Not affiliated** with Guru Maps, WPG, or Evgen Bodunov. Do not copy their name, icons, screenshots, or styles into the UI or store listing. OpenStreetMap attribution stays visible.
 
@@ -8,7 +8,7 @@ Repo: https://github.com/rschultz2003/guru-maps-clone
 
 ## Core differentiator
 
-Users upload their own icons or photos and drop them on exact coordinates. Icons are stored on device (and later in the account), rendered as MapLibre style images, and grouped in folders. That is the MVP bar.
+Users upload their own icons or photos and drop them on exact coordinates. Icons are stored on device (and later in the account), rendered as MapLibre style images, and grouped in folders. That is the MVP bar. Built-in colored pins are not enough.
 
 ## Feature parity (public listing)
 
@@ -24,9 +24,9 @@ Users upload their own icons or photos and drop them on exact coordinates. Icons
 | Sync | One account across iOS and Android (desktop later). Markers, tracks, collections, icon blobs. |
 | CarPlay | Offline map and voice navigation. |
 | Privacy | No ads in any tier. Location stays on device unless the user turns sync on. |
-| Extra | Compass, scale, MGRS / UTM / Plus codes, GeoJSON and MapCSS overlay, GPS accuracy filter, bearing line to a pin, backup restore. |
+| Extra | Compass, scale, MGRS / UTM / Plus codes, GeoJSON overlay, GPS accuracy filter, bearing line to a pin. |
 
-Pro (later): unlimited pins, tracks, and region downloads; satellite and specialist layers (cycling, outdoors, marine, ski). Free stub warns at 15 markers. No IAP in Phase 1.
+Pro (Phase 5): unlimited pins, tracks, and region downloads; satellite and specialist layers. Free stub warns at 15 markers. No IAP in Phase 1.
 
 ## Stack
 
@@ -58,9 +58,11 @@ Open draft: https://github.com/rschultz2003/guru-maps-clone/pull/2
 
 ## Cloud Agent
 
+`CURSOR_API_KEY` is not available in the Chief of Staff environment. Create a key at https://cursor.com/dashboard/api then:
+
 ```bash
-export CURSOR_API_KEY=key_...   # https://cursor.com/dashboard/api
+export CURSOR_API_KEY=key_...
 bash scripts/launch-cloud-agent.sh
 ```
 
-Agent target: finish Phase 1 only, open a PR, do not merge, do not submit to the stores.
+Agent target: finish Phase 1 only, open a PR, do not merge, do not submit to the stores. Model `composer-2`. `autoCreatePR: true`.
