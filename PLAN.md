@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps
 
-Updated 8 Oct 2026. Product target is public feature parity with Guru Maps (App Store id 321745474), under a different name. Not affiliated. Do not ship their trademarks or assets.
+Updated 9 Oct 2026. Product target is public feature parity with Guru Maps (App Store id 321745474), under a different name. Not affiliated. Do not ship their trademarks or assets.
 
 ## Product principles
 
@@ -21,6 +21,16 @@ apps/mobile          Expo React Native client (iOS + Android)
 services/sync        Cloudflare Worker (Phase 5) — Hono + D1 + R2
 packages/shared      types shared by app and sync API
 ```
+
+### Why this stack
+
+| Option | Decision |
+| --- | --- |
+| React Native (Expo) | Chosen. Scaffold exists. Image picker, SQLite, share sheet are first-party. |
+| Flutter | Rejected for v1. Would duplicate the existing app. Revisit only if MapLibre RN blocks offline packs. |
+| MapLibre + OSM | Chosen. Vector style, `addImage` for custom icons, PMTiles/MBTiles offline. Attribution required. |
+| Google Maps SDK | Rejected. Not offline-first, not OSM, licensing fights the privacy story. |
+| Sync | Phase 5 only. Cloudflare Worker + D1 + R2. No Firebase analytics. |
 
 ### Data model (local)
 
@@ -46,7 +56,7 @@ Icon blobs live as files. SQLite stores metadata only. Deletes must tolerate a m
 - Auth: Sign in with Apple + magic link. No password store in v1.
 - Sync protocol: see `docs/sync-api.md`. Last-write-wins per record with `updated_at`, tombstones for deletes.
 - Blobs: R2 keyed by `user_id/icons/{id}`. Client uploads after local save.
-- Pro: RevenueCat entitlement `pro`. Server checks it only for quota (region packs, pin count). Free: 15 markers, 1 region pack, limited track hours.
+- Pro: RevenueCat entitlement `pro`. Server checks it only for quota (region packs, pin count). Free: 15 markers, 1 region pack, 15 tracks. Pro: unlimited markers, tracks, region packs, specialist layers. No ads either tier.
 
 ### Privacy
 
@@ -117,7 +127,7 @@ Map + custom icon upload + pins + folders.
 
 Launch with `scripts/launch-cloud-agent.sh`. Model `composer-2`. `autoCreatePR: true`. Agent must not merge.
 
-Key is not in the Chief of Staff environment. User runs:
+Key is not in the Chief of Staff environment (checked 9 Oct 2026). User runs:
 
 ```bash
 export CURSOR_API_KEY=key_...   # https://cursor.com/dashboard/api
@@ -125,3 +135,9 @@ bash scripts/launch-cloud-agent.sh
 ```
 
 Equivalent curl is in `scripts/launch-cloud-agent.sh`.
+
+Existing draft PR #2 (https://github.com/rschultz2003/guru-maps-clone/pull/2) is polish on the scaffold. Agent should inspect it and either continue it or open a new PR from main if it does not meet acceptance. Do not merge.
+
+## Iteration
+
+After the Phase 1 PR is green: Phase 2 agent prompt is region-pack download + source swap + offline name search. Do not start navigation until a pack renders with no network.
