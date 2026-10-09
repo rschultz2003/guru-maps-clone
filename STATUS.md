@@ -1,13 +1,12 @@
-# Status — 9 Oct 2026 (CoS)
+# Status — 10 Oct 2026 (CoS)
 
-- Master plan refreshed on main: README.md, PLAN.md, scripts/launch-cloud-agent.sh.
+- Master plan refreshed on main: README.md, PLAN.md, CURSOR_AGENT.md, scripts/launch-cloud-agent.sh.
 - Repo: https://github.com/rschultz2003/guru-maps-clone
-- Scaffold already on main: `apps/mobile` Expo + MapLibre + SQLite + image picker + GPX/KML writers.
+- Scaffold on main: `apps/mobile` Expo + MapLibre + SQLite + image picker + GPX/KML writers.
 - Differentiator: custom icon/image upload onto coordinates.
-- PRs:
-  - #1 closed: https://github.com/rschultz2003/guru-maps-clone/pull/1
-  - #2 draft open: https://github.com/rschultz2003/guru-maps-clone/pull/2
-- Cursor Cloud Agents: `CURSOR_API_KEY` is not in this environment. No agent run ID. Key: https://cursor.com/dashboard/api
-- Launch: `bash scripts/launch-cloud-agent.sh` (model composer-2, autoCreatePR true).
+- Prior PRs: #1 closed, #2 draft (check GitHub; do not merge without review).
+- Cursor Cloud Agents: probed `POST https://api.cursor.com/v1/agents` → 401 Invalid User API Key. No run id.
+- Key: https://cursor.com/dashboard/api
+- Launch: `export CURSOR_API_KEY=... && bash scripts/launch-cloud-agent.sh`
 - UI must not use the Guru Maps name or assets. Not affiliated.
-- Next: user runs the curl, or reviews #2. Do not merge without review. Do not App Store submit.
+- Next: user runs the curl, then review the PR. Do not App Store submit.
