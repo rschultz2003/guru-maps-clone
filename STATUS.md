@@ -1,12 +1,13 @@
-# Status — 11 Oct 2026 (CoS)
+# Status — 12 Oct 2026 (CoS)
 
-- Master plan and full spec updated on main (README.md, PLAN.md).
+- Master plan and full spec complete on main (README.md, PLAN.md, CURSOR_AGENT.md).
 - Repo: https://github.com/rschultz2003/guru-maps-clone
-- Scaffold present: `apps/mobile` Expo + MapLibre + SQLite + image picker + GPX/KML.
-- Core differentiator implemented in plan: easy custom icon/image upload to pin locations.
+- Scaffold present and functional for Phase 1 basics: `apps/mobile` Expo + TypeScript + MapLibre + SQLite + image picker + folders + pin list + GPX/KML export stubs.
+- Core differentiator (easy custom icon/image upload to pin locations) is implemented in the scaffold and fully specified.
+- Architecture: On-device first (SQLite + local icon files), MapLibre OSM style, privacy-first, Pro tier planned for later.
 - Cursor Cloud Agents: No API key available in this environment. Probe returns 401.
-- Key required: https://cursor.com/dashboard/api
-- To start live build of MVP:
+- Key required: https://cursor.com/dashboard/api (Basic auth `KEY:`).
+- To start live build / finish Phase 1 MVP and open PR:
 
 ```bash
 export CURSOR_API_KEY=your_key_here
@@ -22,7 +23,7 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "prompt": {
-      "text": "Finish the Phase 1 MVP in apps/mobile for https://github.com/rschultz2003/guru-maps-clone. Read README.md, PLAN.md, and CURSOR_AGENT.md and implement only Phase 1. Expo + TypeScript + @maplibre/maplibre-react-native. OSM vector style with visible OpenStreetMap attribution. Long-press creates a pin. Pin editor with custom icon upload (resize to WebP, store in documents/icons/, SQLite). Render via MapLibre addImage + SymbolLayer. Folders create/rename/show/hide. Pin list, tap-to-fly, safe delete. Share GPX/KML. Free-tier stub at 15 markers. No IAP/ads/analytics. Open a PR. Do not merge. Product name Atlas Maps; not affiliated with Guru Maps."
+      "text": "Finish the Phase 1 MVP in apps/mobile for https://github.com/rschultz2003/guru-maps-clone. Read README.md, PLAN.md, and CURSOR_AGENT.md and implement only Phase 1 from PLAN.md. Expo + TypeScript + @maplibre/maplibre-react-native. Prefer OSM vector style (e.g. OpenFreeMap Liberty) with visible OpenStreetMap attribution. Long-press creates a pin at the coordinate. Pin editor: name, notes, folder, built-in icons, and custom icon upload (PNG/JPEG/WebP resized to ~128px WebP stored as icons/{id}.webp in documents, metadata in SQLite). Render uploaded icons via MapLibre Images / addImage + SymbolLayer (not only colored dots). Folders: create, rename, show/hide; hidden folder pins do not render. Pin list with tap-to-fly. Safe delete. Wire GPX/KML share for a pin. Free-tier stub warns at 15 markers. No IAP, no ads, no analytics. Product name Atlas Maps; not affiliated with Guru Maps. Open a PR. Do not merge."
     },
     "model": { "id": "composer-2" },
     "repos": [{"url": "https://github.com/rschultz2003/guru-maps-clone", "startingRef": "main"}],
@@ -30,5 +31,4 @@ curl --request POST \
   }'
 ```
 
-- UI must not use Guru Maps name or assets.
-- Next: User launches agent, then review PR and iterate toward full parity.
+- Next: User provides/launches with API key, review resulting PR, then iterate phases (navigation, tracks, sync, Pro, 3D, CarPlay) toward full feature parity with Guru Maps while keeping the custom-icon differentiator and privacy-first stance.
