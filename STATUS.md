@@ -1,13 +1,15 @@
-# Status — 13 Oct 2026 (CoS)
+# Status — 14 Oct 2026 (CoS)
 
 - Master plan and full spec complete on main (README.md, PLAN.md, CURSOR_AGENT.md).
 - Repo: https://github.com/rschultz2003/guru-maps-clone
-- Scaffold present and functional for Phase 1 basics: `apps/mobile` Expo + TypeScript + MapLibre + SQLite + image picker + folders + pin list + GPX/KML export stubs.
-- Core differentiator (easy custom icon/image upload to pin locations) is implemented in the scaffold and fully specified.
-- Architecture: On-device first (SQLite + local icon files), MapLibre OSM style, privacy-first, Pro tier planned for later.
+- Scaffold on `main` is functional for Phase 1 basics: `apps/mobile` Expo + TypeScript + MapLibre + SQLite + image picker + folders (create/show-hide) + pin list + long-press pin creation + custom icon upload path + SymbolLayer rendering via Images.
+- Core differentiator (easy custom icon/image upload to pin locations, rendered as MapLibre style images) is implemented in the scaffold.
+- Current style is demo tiles; next polish is OSM Liberty style + visible attribution + offline region stub improvements + free-tier marker limit warning + GPX/KML share wiring.
+- Architecture: On-device first (SQLite + local icon files in documents/icons/), MapLibre OSM, privacy-first, Pro tier planned for later.
+- Existing agent branches present (e.g. cursor/phase1-mvp-polish-*, cursor/maplibre-icons-*).
 - Cursor Cloud Agents: No API key available in this environment. Probe returns 401.
 - Key required: https://cursor.com/dashboard/api (Basic auth `KEY:`).
-- To start live build / finish Phase 1 MVP and open PR:
+- To start / continue live build (finish Phase 1 MVP polish and open PR):
 
 ```bash
 export CURSOR_API_KEY=your_key_here
@@ -23,7 +25,7 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "prompt": {
-      "text": "Finish the Phase 1 MVP in apps/mobile for https://github.com/rschultz2003/guru-maps-clone. Read README.md, PLAN.md, and CURSOR_AGENT.md and implement only Phase 1 from PLAN.md. Expo + TypeScript + @maplibre/maplibre-react-native. Prefer OSM vector style (e.g. OpenFreeMap Liberty) with visible OpenStreetMap attribution. Long-press creates a pin at the coordinate. Pin editor: name, notes, folder, built-in icons, and custom icon upload (PNG/JPEG/WebP resized to ~128px WebP stored as icons/{id}.webp in documents, metadata in SQLite). Render uploaded icons via MapLibre Images / addImage + SymbolLayer (not only colored dots). Folders: create, rename, show/hide; hidden folder pins do not render. Pin list with tap-to-fly. Safe delete. Wire GPX/KML share for a pin. Free-tier stub warns at 15 markers. No IAP, no ads, no analytics. Product name Atlas Maps; not affiliated with Guru Maps. Open a PR. Do not merge."
+      "text": "Finish and polish the Phase 1 MVP in apps/mobile for https://github.com/rschultz2003/guru-maps-clone. Read README.md, PLAN.md, and CURSOR_AGENT.md. Implement only Phase 1. Switch map style to OpenFreeMap Liberty (https://tiles.openfreemap.org/styles/liberty) or equivalent OSM vector with visible OpenStreetMap attribution. Ensure long-press creates a pin. Pin editor supports name, notes, folder, built-in, and custom icon upload (resize to ~128px WebP in documents/icons/{id}.webp, metadata in SQLite). Render custom icons reliably via MapLibre Images + SymbolLayer (iconImage: [\"get\", \"iconId\"]). Folders create/rename/show-hide; hidden pins do not render. Pin list tap-to-fly. Safe delete. Wire GPX/KML export/share for a pin. Free-tier stub warns at 15 markers. No IAP, no ads, no analytics. Product name Atlas Maps; not affiliated with Guru Maps. Open a PR. Do not merge."
     },
     "model": { "id": "composer-2" },
     "repos": [{"url": "https://github.com/rschultz2003/guru-maps-clone", "startingRef": "main"}],
@@ -31,4 +33,4 @@ curl --request POST \
   }'
 ```
 
-- Next: User provides/launches with API key, review resulting PR, then iterate phases (navigation, tracks, sync, Pro, 3D, CarPlay) toward full feature parity with Guru Maps while keeping the custom-icon differentiator and privacy-first stance.
+- Next: User launches with API key (or reviews existing agent branches/PRs), then iterate to Phase 2 (routes), Phase 3 (tracks), Phase 4 (sync + Pro), Phase 5 (offline search, 3D, CarPlay) for full Guru Maps parity while keeping the custom-icon differentiator and privacy-first stance.
