@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps (Guru Maps clone)
 
-Date: 2026-10-11. Status: Phase 1 scaffold exists on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY` (environment returns 401 without it).
+Date: 2026-10-15. Status: Phase 1 scaffold exists on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY` (environment returns 401 without it).
 
 ## Architecture
 
@@ -50,10 +50,11 @@ Date: 2026-10-11. Status: Phase 1 scaffold exists on `main`. Cloud Agent require
 - Share single pin as GPX/KML.
 - Free-tier stub (warn at 15 markers). No IAP, no ads.
 - Persist across restarts.
+- OSM Liberty style + visible attribution.
 
 **Out of scope**: Navigation, tracks, sync, CarPlay, 3D, store submission.
 
-**Acceptance**: `npx tsc --noEmit` passes; custom icon path documented; no Guru Maps trademarks in UI.
+**Acceptance**: `npx tsc --noEmit` passes; custom icon path documented and working; no Guru Maps trademarks in UI.
 
 ### Phase 2 — Navigation & multi-stop routes
 - Multi-stop with custom waypoints.

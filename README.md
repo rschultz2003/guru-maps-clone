@@ -1,8 +1,8 @@
 # Atlas Maps
 
-Privacy-first offline maps client inspired by the feature set of Guru Maps (App Store id 321745474), **not affiliated** with Evgen Bodunov or Guru Maps. Do not copy their name, icons, screenshots, or store copy into the product UI.
+Privacy-first offline maps client inspired by the public feature set of Guru Maps (App Store id 321745474), **not affiliated** with Evgen Bodunov or Guru Maps. Do not copy their name, icons, screenshots, trademarks, or store copy into the product UI or metadata.
 
-**Core differentiator**: Drop a pin and easily upload your own custom icon or photo onto that coordinate. Organize in folders/collections. Fully offline-capable.
+**Core differentiator**: Drop a pin and easily upload your own custom icon or photo onto that coordinate. Organize in folders/collections. Fully offline-capable where possible.
 
 Repo: https://github.com/rschultz2003/guru-maps-clone
 
@@ -10,8 +10,8 @@ Repo: https://github.com/rschultz2003/guru-maps-clone
 
 Match the public Guru Maps surface, then exceed it on custom icons.
 
-- **Offline maps** (OpenStreetMap): Download country/region once. Monthly updates. Import MBTiles / PMTiles. Vector style (OpenFreeMap Liberty or self-hosted).
-- **Custom pins & icons**: Users upload PNG/JPEG/WebP images as pin icons at specific locations. Stored locally, rendered via MapLibre `addImage` / SymbolLayer. Built-in icons + user packs.
+- **Offline maps** (OpenStreetMap): Download country/region once. Monthly updates. Import MBTiles / PMTiles / sqlitedb. Vector style (OpenFreeMap Liberty or self-hosted). Visible OSM attribution always.
+- **Custom pins & icons**: Users upload PNG/JPEG/WebP images as pin icons at specific locations. Stored locally (resized ~128px WebP), rendered via MapLibre `addImage` / SymbolLayer. Built-in icons + user packs. Easy upload is the differentiator.
 - **Folders / collections**: Create, rename, reorder, show/hide, share. Hidden folders do not render markers.
 - **Multi-stop route planning**: Waypoints, fastest/shortest, modes (drive, bike, walk, truck, straight-line). Save, export GPX/KML.
 - **GPS track recording**: Background, live stats (speed, distance, time, altitude), elevation/slope charts, filter noise, export GPX/KML.
@@ -20,7 +20,7 @@ Match the public Guru Maps surface, then exceed it on custom icons.
 - **Sync**: Account-based sync of markers, tracks, collections, icons across devices. Opt-in.
 - **CarPlay**: Offline maps + voice directions (later phase).
 - **No ads. Privacy-first**: Location stays on device. No third-party analytics in free tier.
-- Free tier limits (e.g., 15 markers); Pro unlocks unlimited + offline regions + tracks + sync.
+- Free tier limits (e.g., 15 markers); Pro unlocks unlimited + offline regions + tracks + sync + specialized layers.
 
 ## Tech stack
 
@@ -41,6 +41,7 @@ docs/                API contracts, sync spec
 PLAN.md              Phased master plan
 CURSOR_AGENT.md      Instructions for Cursor Cloud Agents
 scripts/             launch-cloud-agent.sh
+STATUS.md            Current status and launch instructions
 ```
 
 ## Run the MVP
@@ -51,7 +52,7 @@ npm install
 npx expo start
 ```
 
-Long-press map to drop pin. Editor supports name, notes, folder, built-in or uploaded custom icon. Data persists in SQLite.
+Long-press map to drop pin. Editor supports name, notes, folder, built-in or uploaded custom icon. Data persists in SQLite. Custom icons render via MapLibre SymbolLayer.
 
 ## Cloud Agent handoff
 
@@ -62,6 +63,6 @@ export CURSOR_API_KEY=key_...
 bash scripts/launch-cloud-agent.sh
 ```
 
-Or use the exact curl below. Agent scaffolds/implements MVP (map + custom icon upload + pins + folders), opens PR.
+Or use the exact curl in STATUS.md. Agent scaffolds/implements/polishes MVP (map + custom icon upload + pins + folders), opens PR.
 
 See PLAN.md for full phases and acceptance criteria.
