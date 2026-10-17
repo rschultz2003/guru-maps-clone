@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps (Guru Maps clone)
 
-Date: 2026-10-15. Status: Phase 1 scaffold exists on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY` (environment returns 401 without it).
+Date: 2026-10-18. Status: Phase 1 scaffold exists on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY` (environment returns 401 without it).
 
 ## Architecture
 
@@ -10,7 +10,7 @@ Date: 2026-10-15. Status: Phase 1 scaffold exists on `main`. Cloud Agent require
 | MapLibre + OSM style  | markers, tracks,     | Auth (magic link),       |
 | SQLite + local files  | icons, folders       | blobs, device list       |
 | GPS, routes, offline  |                      +--------------------------+
-+-----------------------+                               |
++-----------------------+
                                                         v
                                                  Object storage (icons)
 ```

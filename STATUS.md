@@ -1,4 +1,4 @@
-# Status — 15 Oct 2026 (CoS)
+# Status — 18 Oct 2026 (CoS)
 
 - Master plan and full spec complete on main (README.md, PLAN.md, CURSOR_AGENT.md).
 - Repo: https://github.com/rschultz2003/guru-maps-clone
@@ -19,13 +19,13 @@ bash scripts/launch-cloud-agent.sh
 Exact curl (replace YOUR_API_KEY):
 
 ```bash
-curl --request POST \
-  --url https://api.cursor.com/v1/agents \
-  -u "YOUR_API_KEY:" \
-  --header 'Content-Type: application/json' \
+curl --request POST \\
+  --url https://api.cursor.com/v1/agents \\
+  -u "YOUR_API_KEY:" \\
+  --header 'Content-Type: application/json' \\
   --data '{
     "prompt": {
-      "text": "Finish and polish the Phase 1 MVP in apps/mobile for https://github.com/rschultz2003/guru-maps-clone. Read README.md, PLAN.md, and CURSOR_AGENT.md. Implement only Phase 1. Switch map style to OpenFreeMap Liberty (https://tiles.openfreemap.org/styles/liberty) or equivalent OSM vector with visible OpenStreetMap attribution. Ensure long-press creates a pin. Pin editor supports name, notes, folder, built-in, and custom icon upload (resize to ~128px WebP in documents/icons/{id}.webp, metadata in SQLite). Render custom icons reliably via MapLibre Images + SymbolLayer (iconImage: [\"get\", \"iconId\"]). Folders create/rename/show-hide; hidden pins do not render. Pin list tap-to-fly. Safe delete. Wire GPX/KML export/share for a pin. Free-tier stub warns at 15 markers. No IAP, no ads, no analytics. Product name Atlas Maps; not affiliated with Guru Maps. Open a PR. Do not merge."
+      "text": "Finish and polish the Phase 1 MVP in apps/mobile for https://github.com/rschultz2003/guru-maps-clone. Read README.md, PLAN.md, and CURSOR_AGENT.md. Implement only Phase 1. Switch map style to OpenFreeMap Liberty (https://tiles.openfreemap.org/styles/liberty) or equivalent OSM vector with visible OpenStreetMap attribution. Ensure long-press creates a pin. Pin editor supports name, notes, folder, built-in, and custom icon upload (resize to ~128px WebP in documents/icons/{id}.webp, metadata in SQLite). Render custom icons reliably via MapLibre Images + SymbolLayer (iconImage: [\\\"get\\\", \\\"iconId\\\"]). Folders create/rename/show-hide; hidden pins do not render. Pin list tap-to-fly. Safe delete. Wire GPX/KML export/share for a pin. Free-tier stub warns at 15 markers. No IAP, no ads, no analytics. Product name Atlas Maps; not affiliated with Guru Maps. Open a PR. Do not merge."
     },
     "model": { "id": "composer-2" },
     "repos": [{"url": "https://github.com/rschultz2003/guru-maps-clone", "startingRef": "main"}],
