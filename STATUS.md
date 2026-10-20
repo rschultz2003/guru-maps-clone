@@ -1,10 +1,10 @@
-# Status — 20 Oct 2026 (Chief of Staff)
+# Status — 21 Oct 2026 (Chief of Staff)
 
-- Master plan and full spec complete and current on main (README.md, PLAN.md, CURSOR_AGENT.md).
+- Master plan and full spec current on main (README.md, PLAN.md, CURSOR_AGENT.md).
 - Repo: https://github.com/rschultz2003/guru-maps-clone
 - Scaffold on `main` is functional for Phase 1 basics in `apps/mobile`: Expo + TypeScript + MapLibre + SQLite + image picker + folders (create/show-hide) + pin list + long-press pin creation + custom icon upload path + SymbolLayer rendering via Images.
 - Core differentiator (easy custom icon/image upload to pin locations, rendered as MapLibre style images) is implemented in the scaffold.
-- Current style is demo tiles (`https://demotiles.maplibre.org/style.json`); next polish is OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`) + visible OSM attribution + offline region stub improvements + free-tier marker limit warning (15) + GPX/KML share wiring + safe delete.
+- Current style is demo tiles (`https://demotiles.maplibre.org/style.json`); next polish is OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`) + visible OSM attribution + free-tier marker limit warning (15) + GPX/KML share wiring + safe delete.
 - Architecture: On-device first (SQLite + local icon files in documents/icons/), MapLibre OSM, privacy-first, Pro tier planned for later.
 - Product name in app: Atlas Maps. Not affiliated with Guru Maps.
 - Cursor Cloud Agents: No API key available in this environment. Probe returns 401.

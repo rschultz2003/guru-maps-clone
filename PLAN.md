@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps (Guru Maps clone)
 
-Date: 2026-10-18. Status: Phase 1 scaffold exists on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY` (environment returns 401 without it).
+Date: 2026-10-21. Status: Phase 1 scaffold functional on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY`.
 
 ## Architecture
 
@@ -16,9 +16,9 @@ Date: 2026-10-18. Status: Phase 1 scaffold exists on `main`. Cloud Agent require
 ```
 
 - **On-device first**: Source of truth until sync enabled. Every entity has UUID + `updated_at`. Soft deletes via tombstones.
-- **Custom icons differentiator**: Upload image → resize to WebP → store URI in SQLite → `map.addImage(id, image)` → SymbolLayer with `icon-image` property. Fallback to circle if missing.
-- **Offline**: MapLibre OfflineManager for regions, or PMTiles extracts bundled/downloaded. No scraping of tile servers.
-- **Privacy**: No ads, no analytics SDKs in MVP. Location permissions explained. Sync opt-in. Icons stay local until sync.
+- **Custom icons differentiator**: Upload image → resize to WebP → store URI in SQLite → `MapLibre.Images` / SymbolLayer with `icon-image`. Fallback if missing.
+- **Offline**: MapLibre OfflineManager for regions, or PMTiles/MBTiles extracts. No scraping of tile servers. Visible OSM attribution always.
+- **Privacy**: No ads, no analytics SDKs in MVP. Location stays on device. Sync opt-in.
 
 ### Data model (SQLite)
 
@@ -31,8 +31,8 @@ Date: 2026-10-18. Status: Phase 1 scaffold exists on `main`. Cloud Agent require
 
 ### Map rendering
 
-- Default style: OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`). Always show OSM attribution.
-- Custom icons: Dynamic `Images` component or `addImage` + SymbolLayer from GeoJSON ShapeSource of markers.
+- Target style: OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`) or equivalent OSM vector. Always show OSM attribution.
+- Custom icons: Dynamic `Images` component + SymbolLayer from GeoJSON ShapeSource of markers.
 - Folders control visibility filter on the source.
 - 3D/terrain (later): DEM source + hillshade/fill-extrusion + contour lines.
 
@@ -44,13 +44,15 @@ Date: 2026-10-18. Status: Phase 1 scaffold exists on `main`. Cloud Agent require
 - Expo + TS + MapLibre + SQLite + image picker.
 - Long-press drops pin at coordinate.
 - Pin editor: name, notes, folder, built-in icons, **custom upload** (PNG/JPEG/WebP → resize → `icons/{id}.webp`).
-- Render custom icons via MapLibre style images / SymbolLayer (not just colored dots).
+- Render custom icons via MapLibre `Images` / SymbolLayer.
 - Folders: create, rename, show/hide. Hidden = no render.
 - Pin list, tap-to-fly, safe delete.
 - Share single pin as GPX/KML.
 - Free-tier stub (warn at 15 markers). No IAP, no ads.
 - Persist across restarts.
 - OSM Liberty style + visible attribution.
+
+**Current**: Scaffold on main implements the core path. Remaining polish: switch to Liberty style + attribution, free-tier warning, GPX/KML share wiring, safe delete edge cases.
 
 **Out of scope**: Navigation, tracks, sync, CarPlay, 3D, store submission.
 
