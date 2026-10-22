@@ -1,4 +1,4 @@
-# Status — 21 Oct 2026 (Chief of Staff)
+# Status — 23 Oct 2026 (Chief of Staff)
 
 - Master plan and full spec current on main (README.md, PLAN.md, CURSOR_AGENT.md).
 - Repo: https://github.com/rschultz2003/guru-maps-clone
@@ -6,7 +6,7 @@
 - Core differentiator (easy custom icon/image upload to pin locations, rendered as MapLibre style images) is implemented in the scaffold.
 - Current style is demo tiles (`https://demotiles.maplibre.org/style.json`); next polish is OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`) + visible OSM attribution + free-tier marker limit warning (15) + GPX/KML share wiring + safe delete.
 - Architecture: On-device first (SQLite + local icon files in documents/icons/), MapLibre OSM, privacy-first, Pro tier planned for later.
-- Product name in app: Atlas Maps. Not affiliated with Guru Maps.
+- Product name in app: Atlas Maps. Not affiliated with Guru Maps. Do not copy trademarks.
 - Cursor Cloud Agents: No API key available in this environment. Probe returns 401.
 - Key required: https://cursor.com/dashboard/api (Basic auth `KEY:`).
 - To start / continue live build (finish Phase 1 MVP polish and open PR):
@@ -34,3 +34,4 @@ curl --request POST \
 ```
 
 - Next: User launches with API key (or reviews existing agent branches/PRs if any), then iterate to Phase 2 (routes), Phase 3 (tracks), Phase 4 (sync + Pro), Phase 5 (offline search, 3D, CarPlay) for full Guru Maps parity while keeping the custom-icon differentiator and privacy-first stance.
+- Phased master plan complete. Ready for live Cursor Cloud Agent build of MVP.
