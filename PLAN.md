@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps (Guru Maps clone)
 
-Date: 2026-10-21. Status: Phase 1 scaffold functional on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY`.
+Date: 2026-10-24. Status: Phase 1 scaffold functional on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY`.
 
 ## Architecture
 
@@ -16,7 +16,7 @@ Date: 2026-10-21. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 ```
 
 - **On-device first**: Source of truth until sync enabled. Every entity has UUID + `updated_at`. Soft deletes via tombstones.
-- **Custom icons differentiator**: Upload image → resize to WebP → store URI in SQLite → `MapLibre.Images` / SymbolLayer with `icon-image`. Fallback if missing.
+- **Custom icons differentiator**: Upload image → resize to WebP → store URI in SQLite → `MapLibre.Images` / SymbolLayer with `icon-image`. Fallback if missing. Easy upload UX is the product edge.
 - **Offline**: MapLibre OfflineManager for regions, or PMTiles/MBTiles extracts. No scraping of tile servers. Visible OSM attribution always.
 - **Privacy**: No ads, no analytics SDKs in MVP. Location stays on device. Sync opt-in.
 
@@ -25,16 +25,16 @@ Date: 2026-10-21. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 - `folders(id TEXT PK, name, color, visible INTEGER, sort, updated_at, deleted_at)`
 - `markers(id TEXT PK, folder_id, name, notes, lat REAL, lon REAL, icon_id, created_at, updated_at, deleted_at)`
 - `icons(id TEXT PK, kind TEXT, builtin_key, file_uri, width, height, updated_at)`
-- `tracks(...)` / `track_points(...)` (Phase 3)
-- `routes(...)` (Phase 2)
+- `tracks(id, name, started_at, ended_at, stats_json, updated_at, deleted_at)` / `track_points(id, track_id, lat, lon, ele, time, speed)` (Phase 3)
+- `routes(id, name, waypoints_json, profile, updated_at, deleted_at)` (Phase 2)
 - `regions(...)` for offline packs
 
 ### Map rendering
 
 - Target style: OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`) or equivalent OSM vector. Always show OSM attribution.
-- Custom icons: Dynamic `Images` component + SymbolLayer from GeoJSON ShapeSource of markers.
+- Custom icons: Dynamic `Images` component + SymbolLayer from GeoJSON ShapeSource of markers. `iconImage: ["get", "iconId"]`.
 - Folders control visibility filter on the source.
-- 3D/terrain (later): DEM source + hillshade/fill-extrusion + contour lines.
+- 3D/terrain (later): DEM source + hillshade/fill-extrusion + contour lines + elevation profiles.
 
 ## Phases
 
@@ -71,13 +71,14 @@ Date: 2026-10-21. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 - Live stats: speed, distance, time, altitude.
 - Interactive charts (elevation, speed, slope).
 - GPS filtering. Export GPX/KML.
+- Optional 3D flyover video share (later).
 
 ### Phase 4 — Sync + Pro tier
 - Magic-link auth, multi-device.
 - Sync markers, folders, tracks, icon blobs. Conflict: last-write-wins on `updated_at`; newer tombstone wins.
 - Pro flag (unlimited markers, offline regions, tracks, 3D, sync). IAP later (StoreKit / Play Billing). Do not implement billing in agent PRs.
 
-### Phase 5 — Offline search, 3D terrain, CarPlay
+### Phase 5 — Offline search, 3D terrain, CarPlay, Watch
 - Offline geocoder (bundled gazetteer or Photon index in region).
 - Hillshade, contours, elevation profiles, True 3D relief.
 - CarPlay map template + voice.
@@ -87,4 +88,4 @@ Date: 2026-10-21. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 
 See `scripts/launch-cloud-agent.sh` or the curl in STATUS.md / README. Model: `composer-2`. `autoCreatePR: true`. Starts from `main`.
 
-**Next after agent PR**: Review, iterate on Phase 1, then expand phases.
+**Next after agent PR**: Review, iterate on Phase 1, then expand phases for full parity.
