@@ -1,4 +1,4 @@
-# Status — 30 Oct 2026 (Chief of Staff)
+# Status — 31 Oct 2026 (Chief of Staff)
 
 - Master plan and full spec on main (README.md, PLAN.md, CURSOR_AGENT.md).
 - Repo: https://github.com/rschultz2003/guru-maps-clone
@@ -7,8 +7,7 @@
 - Current style is demo tiles (`https://demotiles.maplibre.org/style.json`); next polish is OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`) + visible OSM attribution + free-tier marker limit warning (15) + GPX/KML share wiring + safe delete.
 - Architecture: On-device first (SQLite + local icon files in documents/icons/), MapLibre OSM, privacy-first, Pro tier planned for later.
 - Product name in app: Atlas Maps. Not affiliated with Guru Maps. Do not copy trademarks.
-- Cursor Cloud Agents: No API key available in this environment. Probe returns 401 / Invalid User API Key.
-- Key required: https://cursor.com/dashboard/api (Basic auth `KEY:`).
+- Cursor Cloud Agents: No API key available in this environment. Probe returns 401 / Invalid User API Key. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:`).
 - To start / continue live build (finish Phase 1 MVP polish and open PR):
 
 ```bash
