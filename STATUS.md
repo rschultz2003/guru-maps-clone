@@ -1,10 +1,11 @@
-# Status — 3 Nov 2026 (Chief of Staff)
+# Status — 4 Nov 2026 (Chief of Staff)
 
 - Master plan and full spec on main (README.md, PLAN.md, CURSOR_AGENT.md). Fully detailed architecture, tech stack (React Native + Expo + MapLibre + SQLite), phases, and acceptance criteria.
 - Repo: https://github.com/rschultz2003/guru-maps-clone
 - Scaffold on `main` is functional for Phase 1 basics in `apps/mobile`: Expo + TypeScript + MapLibre + SQLite + image picker + folders (create/show-hide) + pin list + long-press pin creation + custom icon upload path + SymbolLayer rendering via Images.
 - Core differentiator (easy custom icon/image upload to pin locations, rendered as MapLibre style images) is implemented in the scaffold.
-- Current style is demo tiles (`https://demotiles.maplibre.org/style.json`); next polish is OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`) + visible OSM attribution + free-tier marker limit warning (15) + GPX/KML share wiring + safe delete.
+- Open PR from previous Cloud Agent: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`) — Phase 1 MVP polish (OpenFreeMap style, attribution, better pin editor, GPX/KML, etc.).
+- Current style on main is still demo tiles; PR switches toward OpenFreeMap Liberty + attribution.
 - Architecture: On-device first (SQLite + local icon files in documents/icons/), MapLibre OSM, privacy-first, Pro tier planned for later.
 - Product name in app: Atlas Maps. Not affiliated with Guru Maps. Do not copy trademarks.
 - Cursor Cloud Agents: No API key available in this environment. Probe returns 401 / Invalid User API Key. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:`).
@@ -32,5 +33,5 @@ curl --request POST \
   }'
 ```
 
-- Next: User launches with API key (or reviews existing agent branches/PRs if any), then iterate to Phase 2 (routes), Phase 3 (tracks), Phase 4 (sync + Pro), Phase 5 (offline search, 3D, CarPlay) for full Guru Maps parity while keeping the custom-icon differentiator and privacy-first stance.
+- Next: Review existing PR #2 or launch new agent with API key, then iterate to Phase 2 (routes), Phase 3 (tracks), Phase 4 (sync + Pro), Phase 5 (offline search, 3D, CarPlay) for full Guru Maps parity while keeping the custom-icon differentiator and privacy-first stance.
 - Phased master plan complete. Ready for live Cursor Cloud Agent build of MVP.
