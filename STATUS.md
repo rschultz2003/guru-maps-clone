@@ -1,14 +1,13 @@
-# Status — 11 Nov 2026 (Chief of Staff)
+# Status — 13 Nov 2026 (Chief of Staff)
 
-- Master plan and full spec on main (README.md, PLAN.md, CURSOR_AGENT.md). Fully detailed architecture, tech stack (React Native + Expo + MapLibre + SQLite), phases, and acceptance criteria.
+- Master plan and full spec on main (README.md, PLAN.md, CURSOR_AGENT.md). Fully detailed architecture, tech stack (React Native + Expo + MapLibre + SQLite), phases, and acceptance criteria. Core differentiator: easy custom icon/image upload to pin locations, rendered as first-class MapLibre symbols.
 - Repo: https://github.com/rschultz2003/guru-maps-clone
 - Scaffold on `main` is functional for Phase 1 basics in `apps/mobile`: Expo + TypeScript + MapLibre + SQLite + image picker + folders (create/show-hide) + pin list + long-press pin creation + custom icon upload path + SymbolLayer rendering via Images. Uses demo style; PR #2 switches to OpenFreeMap Liberty + attribution.
-- Core differentiator (easy custom icon/image upload to pin locations, rendered as MapLibre style images) is implemented in the scaffold.
-- Open PR from previous Cloud Agent: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`) — Phase 1 MVP polish (OpenFreeMap style, attribution, better pin editor, GPX/KML, etc.). Review and merge recommended. Independent review notes minor nits (icon file hardening, unused 256px variants).
+- Open PR from previous Cloud Agent: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`) — Phase 1 MVP polish (OpenFreeMap style, attribution, better pin editor, GPX/KML, etc.). Review and merge recommended.
 - Architecture: On-device first (SQLite + local icon files in documents/icons/), MapLibre OSM, privacy-first, Pro tier planned for later.
 - Product name in app: Atlas Maps. Not affiliated with Guru Maps. Do not copy trademarks.
 - Cursor Cloud Agents: No API key available in this environment. Probe returns 401 / Invalid User API Key. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:`).
-- To start / continue live build (finish Phase 1 MVP polish, review PR #2, or expand):
+- To start / continue live build (finish Phase 1 MVP polish, review PR #2, or expand to next phases):
 
 ```bash
 export CURSOR_API_KEY=your_key_here
