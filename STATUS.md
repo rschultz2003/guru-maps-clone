@@ -1,4 +1,4 @@
-# Status — 15 Nov 2026 (Chief of Staff)
+# Status — 16 Nov 2026 (Chief of Staff)
 
 - Master plan and full spec on main (README.md, PLAN.md, CURSOR_AGENT.md). Fully detailed architecture, tech stack (React Native + Expo + MapLibre + SQLite), phases, and acceptance criteria. Core differentiator: easy custom icon/image upload to pin locations, rendered as first-class MapLibre symbols.
 - Repo: https://github.com/rschultz2003/guru-maps-clone
@@ -6,7 +6,7 @@
 - Open PR from previous Cloud Agent: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`, agent bc-6e852429-517d-501a-b705-da3d429cd007) — Phase 1 MVP polish (OpenFreeMap style, attribution, better pin editor, GPX/KML, etc.). Review and merge recommended.
 - Architecture: On-device first (SQLite + local icon files in documents/icons/), MapLibre OSM, privacy-first, Pro tier planned for later.
 - Product name in app: Atlas Maps. Not affiliated with Guru Maps. Do not copy trademarks.
-- Cursor Cloud Agents: No API key available in this environment. Probe would return 401 / Invalid User API Key. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:` or Bearer).
+- Cursor Cloud Agents: No API key available in this environment. Probe returns 401 / Invalid User API Key. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:` or Bearer).
 - To start / continue live build (finish Phase 1 MVP polish, review PR #2, or expand to next phases):
 
 ```bash
