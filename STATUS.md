@@ -1,12 +1,12 @@
-# Status — 17 Nov 2026 (Chief of Staff)
+# Status — 18 Nov 2026 (Chief of Staff)
 
-- **Master plan and full spec** live on main: `README.md` (product parity target, tech stack, layout, run instructions) and `PLAN.md` (architecture, data model, phased delivery with acceptance criteria). Core differentiator locked: easy custom icon/image upload to pin locations, rendered as first-class MapLibre symbols.
+- **Master plan and full spec** live on main: `README.md` (product parity target matching Guru Maps public features + custom icon differentiator, tech stack, layout, run instructions) and `PLAN.md` (architecture, data model, phased delivery with acceptance criteria).
 - **Repo**: https://github.com/rschultz2003/guru-maps-clone
 - **Product name**: Atlas Maps (not affiliated with Guru Maps / Evgen Bodunov). Do not copy trademarks, icons, or store copy.
 - **Phase 1 scaffold** on `main` in `apps/mobile`: Expo + TypeScript + MapLibre + SQLite + image picker + folders (create/show-hide) + pin list + long-press pin creation + custom icon upload path + SymbolLayer rendering. Demo style currently; previous Cloud Agent PR targets OpenFreeMap Liberty + attribution.
-- **Open PR**: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`, agent `bc-6e852429-517d-501a-b705-da3d429cd007`) — Phase 1 MVP polish. Review and merge recommended.
+- **Open PR**: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`) — Phase 1 MVP polish. Review and merge recommended.
 - **Architecture**: On-device first (SQLite + local icon files under documents/icons/), MapLibre OSM vector, privacy-first, no ads/analytics in free tier. Pro tier and sync planned for Phase 4.
-- **Cursor Cloud Agents**: No `CURSOR_API_KEY` available in the current environment (probe returns 401). Key required from https://cursor.com/dashboard/api (Basic auth `KEY:` or Bearer).
+- **Cursor Cloud Agents**: No `CURSOR_API_KEY` available in the current environment. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:`).
 
 ## Launch / continue live build
 
@@ -17,7 +17,7 @@ export CURSOR_API_KEY=your_key_here
 bash scripts/launch-cloud-agent.sh
 ```
 
-**Exact curl** (replace `YOUR_API_KEY`) to polish Phase 1 MVP:
+**Exact curl** (replace `YOUR_API_KEY`) to polish Phase 1 MVP and push a PR:
 
 ```bash
 curl --request POST \
