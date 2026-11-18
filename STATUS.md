@@ -1,4 +1,4 @@
-# Status — 18 Nov 2026 (Chief of Staff)
+# Status — 19 Nov 2026 (Chief of Staff)
 
 - **Master plan and full spec** live on main: `README.md` (product parity target matching Guru Maps public features + custom icon differentiator, tech stack, layout, run instructions) and `PLAN.md` (architecture, data model, phased delivery with acceptance criteria).
 - **Repo**: https://github.com/rschultz2003/guru-maps-clone
@@ -43,3 +43,16 @@ curl --request POST \
 5. Phase 5 (offline search, 3D terrain, CarPlay, Watch).
 
 Keep the custom-icon differentiator and privacy-first stance throughout.
+
+## Plan Summary
+
+**Tech Stack**: React Native + Expo + TypeScript, @maplibre/maplibre-react-native (OpenFreeMap Liberty / OSM), expo-sqlite + local files for icons, expo-image-picker/manipulator.
+
+**Phases**:
+- Phase 1 (MVP, current): Map + custom icon upload + pins + folders. Scaffold functional on main.
+- Phase 2: Multi-stop routes + navigation.
+- Phase 3: GPS track recording + stats + export.
+- Phase 4: Sync + Pro tier (magic-link auth, last-write-wins).
+- Phase 5: Offline search, 3D terrain, CarPlay, Watch.
+
+Core differentiator: Easy custom icon/image upload to pin locations, rendered as MapLibre symbols.
