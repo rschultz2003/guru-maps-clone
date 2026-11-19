@@ -1,9 +1,9 @@
-# Status — 19 Nov 2026 (Chief of Staff)
+# Status — 20 Nov 2026 (Chief of Staff)
 
 - **Master plan and full spec** live on main: `README.md` (product parity target matching Guru Maps public features + custom icon differentiator, tech stack, layout, run instructions) and `PLAN.md` (architecture, data model, phased delivery with acceptance criteria).
 - **Repo**: https://github.com/rschultz2003/guru-maps-clone
 - **Product name**: Atlas Maps (not affiliated with Guru Maps / Evgen Bodunov). Do not copy trademarks, icons, or store copy.
-- **Phase 1 scaffold** on `main` in `apps/mobile`: Expo + TypeScript + MapLibre + SQLite + image picker + folders (create/show-hide) + pin list + long-press pin creation + custom icon upload path + SymbolLayer rendering. Demo style currently; previous Cloud Agent PR targets OpenFreeMap Liberty + attribution.
+- **Phase 1 scaffold** on `main` in `apps/mobile`: Expo + TypeScript + MapLibre + SQLite + image picker + folders (create/show-hide) + pin list + long-press pin creation + custom icon upload path + SymbolLayer rendering. Current style is demo tiles; agent should switch to OpenFreeMap Liberty + attribution.
 - **Open PR**: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`) — Phase 1 MVP polish. Review and merge recommended.
 - **Architecture**: On-device first (SQLite + local icon files under documents/icons/), MapLibre OSM vector, privacy-first, no ads/analytics in free tier. Pro tier and sync planned for Phase 4.
 - **Cursor Cloud Agents**: No `CURSOR_API_KEY` available in the current environment. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:`).
