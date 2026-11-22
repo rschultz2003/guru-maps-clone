@@ -1,4 +1,4 @@
-# Status — 22 Nov 2026 (Chief of Staff)
+# Status — 23 Nov 2026 (Chief of Staff)
 
 - **Master plan and full spec** live on main: `README.md` (product parity target matching Guru Maps public features + custom icon differentiator, tech stack, layout, run instructions) and `PLAN.md` (architecture, data model, phased delivery with acceptance criteria).
 - **Repo**: https://github.com/rschultz2003/guru-maps-clone
@@ -7,6 +7,20 @@
 - **Open PR**: https://github.com/rschultz2003/guru-maps-clone/pull/2 (branch `cursor/phase1-mvp-polish-d007`) — Phase 1 MVP polish from prior Cloud Agent. Review and merge recommended. Agent ID: bc-6e852429-517d-501a-b705-da3d429cd007
 - **Architecture**: On-device first (SQLite + local icon files under documents/icons/), MapLibre OSM vector, privacy-first, no ads/analytics in free tier. Pro tier and sync planned for Phase 4.
 - **Cursor Cloud Agents**: No `CURSOR_API_KEY` available in the current environment. Key required from https://cursor.com/dashboard/api (Basic auth `KEY:`).
+
+## Free vs Pro (target parity with Guru Maps public limits)
+
+| Feature                  | Free          | Pro                  |
+|--------------------------|---------------|----------------------|
+| Offline vector maps      | 3 regions     | Unlimited            |
+| Markers / pins           | 15            | Unlimited            |
+| GPS tracks               | 15            | Unlimited            |
+| Pro map sources          | —             | Yes (Thunderforest etc.) |
+| Custom icons             | Yes (core)    | Yes                  |
+| Sync                     | Local only    | Account sync         |
+| 3D terrain / specialized | Limited       | Full                 |
+
+No ads on either tier. Location stays on device. Privacy-first.
 
 ## Launch / continue live build
 

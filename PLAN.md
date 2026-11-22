@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps (Guru Maps clone)
 
-Date: 2026-10-24. Status: Phase 1 scaffold functional on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY`.
+Date: 2026-11-23. Status: Phase 1 scaffold functional on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY`.
 
 ## Architecture
 
@@ -52,7 +52,7 @@ Date: 2026-10-24. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 - Persist across restarts.
 - OSM Liberty style + visible attribution.
 
-**Current**: Scaffold on main implements the core path. Remaining polish: switch to Liberty style + attribution, free-tier warning, GPX/KML share wiring, safe delete edge cases.
+**Current**: Scaffold on main implements the core path. Remaining polish: switch to Liberty style + attribution, free-tier warning, GPX/KML share wiring, safe delete edge cases. Open PR #2 available for review.
 
 **Out of scope**: Navigation, tracks, sync, CarPlay, 3D, store submission.
 
@@ -77,6 +77,7 @@ Date: 2026-10-24. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 - Magic-link auth, multi-device.
 - Sync markers, folders, tracks, icon blobs. Conflict: last-write-wins on `updated_at`; newer tombstone wins.
 - Pro flag (unlimited markers, offline regions, tracks, 3D, sync). IAP later (StoreKit / Play Billing). Do not implement billing in agent PRs.
+- Free limits target: 3 offline maps, 15 markers, 15 tracks.
 
 ### Phase 5 — Offline search, 3D terrain, CarPlay, Watch
 - Offline geocoder (bundled gazetteer or Photon index in region).
