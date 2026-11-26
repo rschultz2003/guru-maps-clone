@@ -8,7 +8,7 @@ Repo: https://github.com/rschultz2003/guru-maps-clone
 
 ## Product parity target
 
-Match the public Guru Maps surface (as of v6.4, Oct 2026), then exceed it on custom icons.
+Match the public Guru Maps surface (as of late 2026), then exceed it on custom icons.
 
 - **Offline maps** (OpenStreetMap): Download country/region once. Monthly updates. Import MBTiles / PMTiles / sqlitedb. Vector style (OpenFreeMap Liberty or self-hosted). Visible OSM attribution always.
 - **Custom pins & icons**: Users upload PNG/JPEG/WebP images as pin icons at specific locations. Stored locally (resized ~128px WebP), rendered via MapLibre `Images` / `addImage` + SymbolLayer. Built-in icons + user packs. Easy upload is the differentiator.

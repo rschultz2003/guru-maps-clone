@@ -1,6 +1,6 @@
 # Master plan — Atlas Maps (Guru Maps clone)
 
-Date: 2026-11-23. Status: Phase 1 scaffold functional on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY`.
+Date: 2026-11-27. Status: Phase 1 scaffold functional on `main`. Cloud Agent requires user-provided `CURSOR_API_KEY`. Open PR #2 available for Phase 1 polish.
 
 ## Architecture
 
@@ -52,7 +52,7 @@ Date: 2026-11-23. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 - Persist across restarts.
 - OSM Liberty style + visible attribution.
 
-**Current**: Scaffold on main implements the core path. Remaining polish: switch to Liberty style + attribution, free-tier warning, GPX/KML share wiring, safe delete edge cases. Open PR #2 available for review.
+**Current**: Scaffold on main implements the core path (long-press pin, custom icon upload, folders, SymbolLayer). Remaining polish: switch to Liberty style + attribution, free-tier warning, GPX/KML share wiring, safe delete edge cases. Open PR #2 available for review.
 
 **Out of scope**: Navigation, tracks, sync, CarPlay, 3D, store submission.
 
@@ -87,6 +87,6 @@ Date: 2026-11-23. Status: Phase 1 scaffold functional on `main`. Cloud Agent req
 
 ## Cloud Agent
 
-See `scripts/launch-cloud-agent.sh` or the curl in STATUS.md / README. Model: `composer-2`. `autoCreatePR: true`. Starts from `main`.
+See `scripts/launch-cloud-agent.sh` or the curl in STATUS.md. Model: `composer-2`. `autoCreatePR: true`. Starts from `main`.
 
 **Next after agent PR**: Review, iterate on Phase 1, then expand phases for full parity.
